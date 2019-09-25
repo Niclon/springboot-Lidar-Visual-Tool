@@ -1,0 +1,8 @@
+This script will run webpack to watch changes on in specified folder
+--npm run-script watch
+This will do what is specified in pom.xml(build) and install node minifie js
+--./mvnw spring-boot:run
+
+base guide = https://spring.io/guides/tutorials/react-and-spring-data-rest/
+
+
