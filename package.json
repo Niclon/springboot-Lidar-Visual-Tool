@@ -1,0 +1,36 @@
+{
+  "name": "BCProject-LidarDataViewer",
+  "description": "Lidar viewer",
+  "private": true,
+  "author": "Petr Vychodil",
+  "version": "1.0.0",
+  "repository": "https://github.com/Niclon/BCProject-LidarDataViewer",
+  "scripts": {
+    "start": "brunch watch --server",
+    "build": "brunch build --production",
+    "deploy": "ghpages -d public",
+    "watch": "webpack --watch -d",
+    "build-web": "webpack --build"
+  },
+  "dependencies": {
+    "aframe": "^0.7.1",
+    "aframe-react": "^4.4.0",
+    "dat.gui": "^0.7.2",
+    "preact": "^8.1.0",
+    "react": "^16.4.1",
+    "react-dom": "16.4.0",
+    "rest": "^1.3.1"
+  },
+  "devDependencies": {
+    "auto-reload-brunch": "^2",
+    "babel-brunch": "~6.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-latest": "^6",
+    "@babel/core": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.2",
+    "webpack": "^4.19.1",
+    "webpack-cli": "^3.1.0"
+  }
+}

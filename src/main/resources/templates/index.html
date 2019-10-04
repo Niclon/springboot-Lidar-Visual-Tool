@@ -1,15 +1,21 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org">
-<head lang="en">
-    <meta charset="UTF-8"/>
-    <title>ReactJS + Spring Data REST</title>
-    <link rel="stylesheet" href="/main.css" />
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>WebVR: A-Frame + Preact</title>
+    <script src="built/bundle.js"></script>
+    <!--<script>-->
+        <!--require('initialize');-->
+    <!--</script>-->
 </head>
+
 <body>
-
-<div id="react"></div>
-
-<script src="built/bundle.js"></script>
-
+<div id="loadModal">
+    <div class="spinner"></div>
+</div>
+<div id="drawingCanvasDiv"></div>
+<div id="app">
+    <div id="my-gui-container"></div>
+</div>
 </body>
-</html>

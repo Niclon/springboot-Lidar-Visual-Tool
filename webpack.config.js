@@ -1,13 +1,17 @@
+const webpack = require('webpack');
 var path = require('path');
 
 module.exports = {
-    entry: './src/main/frontend/app.js',
+    entry: './src/main/frontend/initialize.js',
     devtool: 'sourcemaps',
-    cache: true,
+    cache: false,
     mode: 'development',
     output: {
         path: __dirname,
+        //for mwnw run
         filename: './src/main/resources/static/built/bundle.js'
+        //for debug pupouse
+        // filename: './target/classes/static/built/bundle.js'
     },
     module: {
         rules: [
@@ -22,5 +26,11 @@ module.exports = {
                 }]
             }
         ]
-    }
+    },
+    plugins: [
+        new webpack.ProvidePlugin({
+            "React": "react",
+            "ReactDOM": "react-dom"
+        }),
+    ],
 };
