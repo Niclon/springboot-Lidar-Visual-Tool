@@ -3,7 +3,7 @@ create user lvast with password 'lvast';
 grant all privileges on database lvast to lvast;
 -- for main menu where you chose which data to take
 create table if not exists main_menu_storage (
-id serial primary key ,
+id bigserial primary key ,
 identification_name varchar not null
 );
 -- todo create index
@@ -16,7 +16,7 @@ foreign key (main_menu_id) references main_menu_storage(id)
 );
 -- selected items
 create table if not exists selected_item_name(
-id serial primary key ,
+id bigserial primary key ,
 item_name varchar  not null
 );
 -- selected items pictures

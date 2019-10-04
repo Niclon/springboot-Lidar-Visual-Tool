@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Main Menu</title>
+</head>
+<body>
+<tr th:each="item : ${mainMenuitems}">
+    <td th:text="${item.id}">1</td>
+    <td><a href="#" th:text="${item.identificationName}">Title ...</a></td>
+</tr>
+</body>
+</html>
