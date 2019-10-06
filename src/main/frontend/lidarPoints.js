@@ -76,7 +76,7 @@ class lidarPoints extends Component {
 
 
         let that = this;
-        texHolder.load('static/dist/img/360IMGStreet.jpg', (texture) => {
+        texHolder.load('/static/dist/img/360IMGStreet.jpg', (texture) => {
             sphereMaterial.map = texture;
             let sphereMesh = new THREE.Mesh(photoSphere, sphereMaterial);
             sphereMesh.name = "Background";
