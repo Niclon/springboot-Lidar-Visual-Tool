@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    ReactDOM.render(<LidarPoints stepNumber={0} maxStepNumber={220}/>, document.querySelector('#lidarPoints'));
+    ReactDOM.render(<LidarPoints stepNumber={0} maxStepNumber={maxOfSlider} menuId={menuId}/>, document.querySelector('#lidarPoints'));
 });
 
 document.addEventListener('DOMContentLoaded', () => {

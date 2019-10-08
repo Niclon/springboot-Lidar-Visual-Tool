@@ -9,6 +9,7 @@ class lidarPoints extends Component {
         this.state = {
             stepNumber: props.stepNumber,
             isReplay: props.isReplay,
+            menuId: props.menuId,
             images: ['img/360IMGStreet.jpg', 'img/image1.jpg', 'img/image2.jpg', 'img/image3.jpeg'],
         };
         this.createDatGuiUI(props.maxStepNumber);
@@ -134,13 +135,15 @@ class lidarPoints extends Component {
         if (this.state.isReplay) {
             request.open('GET', '/dataStoredReplay/' + this.state.stepNumber, true);  // `false` makes the request synchronous
         } else {
-            request.open('GET', '/dataStored/' + this.state.stepNumber, true);  // `false` makes the request synchronous
+            // request.open('GET', '/dataStored/' + this.state.stepNumber, true);  // `false` makes the request synchronous
+            request.open('GET', '/rawData/' + this.state.menuId + '/' + this.state.stepNumber, true);  // `false` makes the request synchronous
+
         }
 
         request.setRequestHeader('Content-Type', 'application/json');
         request.onreadystatechange = function () {
             if (request.readyState === 4 && request.status === 200) {
-                that.props.lidarPoints = JSON.parse(request.response);
+                that.state.lidarPoints = JSON.parse(request.response);
                 that.renderPointsFromData();
                 that.hideLoadingModal();
                 if (!that.state.isReplay) {

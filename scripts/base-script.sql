@@ -12,6 +12,7 @@ create table if not exists raw_data_store (
 id bigserial primary key,
 raw_data_array varchar not null,
 main_menu_id serial not null,
+data_id serial not null,
 foreign key (main_menu_id) references main_menu_storage(id)
 );
 -- selected items

@@ -16,6 +16,9 @@ public class RawData {
     @JoinColumn(name = "main_menu_id")
     private MainMenu mainMenu;
 
+    @Column(name = "data_id")
+    private Long dataId;
+
     public Long getId() {
         return id;
     }
@@ -38,5 +41,13 @@ public class RawData {
 
     public void setMainMenu(MainMenu mainMenu) {
         this.mainMenu = mainMenu;
+    }
+
+    public Long getDataId() {
+        return dataId;
+    }
+
+    public void setDataId(Long dataId) {
+        this.dataId = dataId;
     }
 }
