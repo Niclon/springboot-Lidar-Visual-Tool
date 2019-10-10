@@ -167,7 +167,7 @@ class lidarPoints extends Component {
         let material = new THREE.MeshLambertMaterial({color: 0x39ff14});
 
         let that = this;
-        let thatPoints = this.props.lidarPoints;
+        let thatPoints = this.state.lidarPoints;
         if (that.state.isReplay) {
             thatPoints = JSON.parse(thatPoints);
         }
