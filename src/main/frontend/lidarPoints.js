@@ -1,11 +1,10 @@
-import {Component, h, render} from 'react'
 import {CustomFrustum} from "./customFrustum";
 
 var THREE = require('three');
 
-class lidarPoints extends Component {
+class LidarPoints {
     constructor(props) {
-        super(props);
+        this.mainScene = props.mainScene;
         this.state = {
             stepNumber: props.stepNumber,
             isReplay: props.isReplay,
@@ -30,17 +29,15 @@ class lidarPoints extends Component {
             if (value === that.state.stepNumber) {
                 return;
             }
-            that.setState({
-                stepNumber: value,
-            });
-
+            that.state.stepNumber = value;
+            that.render();
         });
         let customContainer = document.querySelector('#my-gui-container');
         if (customContainer != null) customContainer.appendChild(gui.domElement);
     }
 
     removeSpheres() {
-        let scenel = document.querySelector('a-scene').object3D;
+        let scenel = this.mainScene.scene;
         let selectedObject = scenel.getObjectByName("groupOfPoints");
         if (selectedObject) {
             selectedObject.children.forEach(function (x) {
@@ -62,7 +59,7 @@ class lidarPoints extends Component {
     }
 
     makeBackroundIMG() {
-        let scene = document.querySelector('a-scene').object3D;
+        let scene = this.mainScene.scene;
         let bgSphere = scene.getObjectByName("Background");
         if (bgSphere) {
             scene.remove(bgSphere);
@@ -90,15 +87,15 @@ class lidarPoints extends Component {
     }
 
     takePicturesfromCameras() {
-        let scene = document.querySelector('a-scene');
-        let renderer = scene.renderer;
+        let scene = this.mainScene.scene;
+        let renderer = this.mainScene.renderer;
 
         if (renderer == null) {
             return;
         }
         // let camera;
-        let groupOfCameras = scene.object3D.getObjectByName("groupOfCameras");
-        let groupOfLines = scene.object3D.getObjectByName("groupOfLines");
+        let groupOfCameras = scene.getObjectByName("groupOfCameras");
+        let groupOfLines = scene.getObjectByName("groupOfLines");
 
         if (groupOfCameras) {
             if (groupOfCameras.children.length > 0) {
@@ -155,7 +152,7 @@ class lidarPoints extends Component {
     }
 
     renderPointsFromData() {
-        let scene = document.querySelector('a-scene').object3D;
+        let scene = this.mainScene.scene;
         let spheres = scene.getObjectByName("groupOfPoints");
 
         if (!spheres) {
@@ -199,7 +196,7 @@ class lidarPoints extends Component {
     }
 
     createBorderAndRotate(line) {
-        let lines = document.querySelector('a-scene').object3D.getObjectByName("groupOfLines");
+        let lines = this.mainScene.scene.getObjectByName("groupOfLines");
         let borderLine = this.create3DLineBorder(line.xLength, line.yLength);
         borderLine.position.set(line.position.x, line.position.y, line.position.z);
         borderLine.rotation.set(line.rotationEuler._x, line.rotationEuler._y, line.rotationEuler._z);
@@ -241,7 +238,7 @@ class lidarPoints extends Component {
     }
 
     createFrustumForShapeAndGetData() {
-        let scene = document.querySelector('a-scene').object3D;
+        let scene = this.mainScene.scene;
         let spheres = scene.getObjectByName("groupOfPoints");
         let lines = scene.getObjectByName('groupOfLines');
         let cameraPosition = new THREE.Vector3(0, 0.4, 0);
@@ -342,8 +339,7 @@ class lidarPoints extends Component {
         this.makeBackroundIMG();
         //callbacks for rendering, frustum etc
         this.loadDataFromServerAndRenderPoints();
-        return (null);
     }
 }
 
-export default (lidarPoints)
+export default (LidarPoints)

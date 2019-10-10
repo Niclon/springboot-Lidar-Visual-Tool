@@ -1,3 +1,4 @@
+var THREE = require('three');
 import CustomDragControls from "./customDragControls";
 import CustomSelectionResizer from "./customSelectionResizer";
 

@@ -1,3 +1,5 @@
+var THREE = require('three');
+
 class CustomSelectionResizer {
     constructor(props) {
         this.customSelection = props.customSelection;
