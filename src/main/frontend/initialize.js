@@ -54,12 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         scene.add(groupOfLines);
         scene.add(groupOfPoints);
         scene.add(groupOfCameras);
-        mainScene.camera.position.set(0, 0.4, 5);
+        mainScene.camera.position.set(0, 0.4, 0.1);
     }
 });
-
-// document.addEventListener('DOMContentLoaded', () => {
-//     ReactDOM.render(<LidarPoints stepNumber={0} maxStepNumber={maxOfSlider}
-//                                  menuId={menuId}/>, document.querySelector('#lidarPoints'));
-// });
 
