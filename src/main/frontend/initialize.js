@@ -16,9 +16,7 @@ var groupOfLines = new THREE.Group();
 var groupOfPoints = new THREE.Group();
 var groupOfCameras = new THREE.Group();
 
-// document.addEventListener('DOMContentLoaded', () => {
-//     ReactDOM.render(<Main/>, document.querySelector('#app'));
-// });
+
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -36,12 +34,13 @@ document.addEventListener('DOMContentLoaded', () => {
         customDrawing = new CustomDrawing();
         customSelection.customDrawing = customDrawing;
     });
-    new LidarPoints({
+    var lidarPoints = new LidarPoints({
         stepNumber: 0,
         maxStepNumber: maxOfSlider,
         menuId: menuId,
         mainScene: mainScene
     });
+    lidarPoints.render();
     mainScene.animate();
 
 
@@ -55,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
         scene.add(groupOfLines);
         scene.add(groupOfPoints);
         scene.add(groupOfCameras);
-        // mainScene.camera.position.setY(mainCameraYPosition);
         mainScene.camera.position.set(0, mainCameraYPosition, 0.000000000000001);
 
     }
