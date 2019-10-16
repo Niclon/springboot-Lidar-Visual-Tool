@@ -30,6 +30,7 @@ public class BaseNavigationController {
     public String mainMenu(Model model, @PathVariable(value = "id") Long id) {
         model.addAttribute("menuId", id);
         model.addAttribute("maxOfSlider", rawDataService.getNumberOfDataAvailable(id));
+        model.addAttribute("mainCameraYPosition", 0.4);
 
         return "index";
     }

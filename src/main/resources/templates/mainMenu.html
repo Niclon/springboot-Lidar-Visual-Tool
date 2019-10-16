@@ -44,7 +44,7 @@
                     <div class="row justify-content-center align-items-center">
                         <div class="">
                             <ul style="list-style-type:circle;" th:each="item : ${mainMenuitems}">
-                                <li><a class="item-text" th:href="@{/load/data(id=${item.id})}" th:text="${item.identificationName}">Title ...</a></li>
+                                <li><a class="item-text" th:href="@{/load/data/{id}(id=${item.id})}" th:text="${item.identificationName}">Title ...</a></li>
                             </ul>
                         </div>
                     </div>

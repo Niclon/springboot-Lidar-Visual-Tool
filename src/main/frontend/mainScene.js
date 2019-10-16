@@ -10,7 +10,9 @@ class MainScene {
         this.renderer = new THREE.WebGLRenderer();
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.setClearColor(0xEEEEEE);
+        this.createBasicControls();
         document.body.appendChild(this.renderer.domElement);
+        window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
 
         //todo remove
         var geometry = new THREE.BoxGeometry( 1, 1, 1 );
@@ -18,12 +20,13 @@ class MainScene {
         var cube = new THREE.Mesh( geometry, material );
         cube.position.z = -4;
         this.scene.add( cube );
-        this.createBasicControls();
-        window.addEventListener( 'resize', this.onWindowResize, false );
     }
     animate() {
-        requestAnimationFrame( this.animate.bind(this) );
+        this.frameId = requestAnimationFrame( this.animate.bind(this) );
         this.renderer.render( this.scene, this.camera );
+    }
+    stopAnimation(){
+        cancelAnimationFrame( this.frameId );
     }
 
     onWindowResize() {
@@ -36,7 +39,7 @@ class MainScene {
         this.controls = new OrbitControls( this.camera, this.renderer.domElement );
         this.controls.enableZoom = false;
         this.controls.enablePan = false;
-        this.controls.target.y = 0.4;
+        this.controls.target.y = mainCameraYPosition;
     }
 }
 

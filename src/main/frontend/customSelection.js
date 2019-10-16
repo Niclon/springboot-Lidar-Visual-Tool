@@ -8,9 +8,11 @@ class CustomSelection {
         this.isDraggingControlEnabled = false;
         this.selectionCounter = 0;
 
-        this.scene = props.scene;
-        this.renderer = this.scene.renderer;
-        this.mainCamera = this.scene.camera;
+
+        this.mainScene = props.scene;
+        this.scene = props.scene.scene;
+        this.renderer = this.mainScene.renderer;
+        this.mainCamera = this.mainScene.camera;
         this.dragControls = null;
         this.raycaster = new THREE.Raycaster();
         this.plane = new THREE.Plane();
@@ -18,7 +20,7 @@ class CustomSelection {
         this.mouse = new THREE.Vector2();
         this.lineObjects = [];
         this.additionalCamerasObjects = [];
-        this.material = new THREE.LineBasicMaterial({color: 0xff00ff, linewidth: 3});
+        this.material = new THREE.LineBasicMaterial({color: 0xff0000, linewidth: 4});
         this.groupOfCameras = props.groupOfCameras;
         this.groupOfLines = props.groupOfLines;
         this.rotationMatrix = new THREE.Matrix3();
@@ -42,8 +44,8 @@ class CustomSelection {
             if (!e) e = window.event;
             if (e.ctrlKey) {
                 if (!that.isFrameStopped) {
-                    document.querySelector('#scatchPlane').setAttribute('visible', 'true');
-                    that.scene.pause();
+                    // document.querySelector('#scatchPlane').setAttribute('visible', 'true');
+                    that.mainScene.stopAnimation();
 
                     that.isFrameStopped = true;
                     that.customDrawing.showDrawingCanvas();
@@ -51,9 +53,9 @@ class CustomSelection {
             }
             if (e.altKey) {
                 if (that.isFrameStopped) {
-                    document.querySelector('#scatchPlane').setAttribute('visible', 'false');
+                    // document.querySelector('#scatchPlane').setAttribute('visible', 'false');
                     that.isFrameStopped = false;
-                    that.scene.play();
+                    that.mainScene.animate();
                     that.customDrawing.clearAndHideCanvas();
                 }
             }
@@ -62,9 +64,9 @@ class CustomSelection {
                 if (that.isFrameStopped) {
                     if (that.customDrawing.endPointX != null && that.customDrawing.startPointX != null) {
                         that.makeBorder();
-                        document.querySelector('#scatchPlane').setAttribute('visible', 'false');
+                        // document.querySelector('#scatchPlane').setAttribute('visible', 'false');
                         that.isFrameStopped = false;
-                        that.scene.play();
+                        that.mainScene.animate();
                         that.customDrawing.clearAndHideCanvas();
                     }
                 }
@@ -130,9 +132,9 @@ class CustomSelection {
 
     makeBorder() {
 
-        this.scene = document.querySelector('a-scene');
-        this.renderer = this.scene.renderer;
-        this.mainCamera = this.scene.camera;
+        // this.scene = document.querySelector('a-scene');
+        // this.renderer = this.scene.renderer;
+        // this.mainCamera = this.scene.camera;
 
         let firstPoint;
         let secondPoint;
@@ -161,14 +163,15 @@ class CustomSelection {
         let reultVec = firstPoint.clone().add(secondPoint).divideScalar(2).setLength(3);
 
         let camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 100);
-        camera.position.set(0, 0.4, 0);
+        camera.position.set(0, mainCameraYPosition, 0);
         camera.lookAt(reultVec);
         this.groupOfCameras.add(camera);
         this.additionalCamerasObjects.push(camera);
-        let worldRotation = camera.getWorldRotation();
+        let worldRotation = new THREE.Quaternion();
+        camera.getWorldQuaternion(worldRotation);
 
         line.position.set(reultVec.x, reultVec.y, reultVec.z);
-        line.rotation.set(worldRotation._x, worldRotation._y, worldRotation._z);
+        line.rotation.setFromQuaternion(worldRotation);
 
         line.renderOrder = 1;
         line.userData = {
@@ -198,7 +201,7 @@ class CustomSelection {
     }
 
     createLineGeometry(xLength, yLength) {
-        var rectShape = new THREE.Shape();
+        let rectShape = new THREE.Shape();
 
         rectShape.moveTo(-xLength / 2, yLength / 2);
         rectShape.lineTo(xLength / 2, yLength / 2);
@@ -213,7 +216,7 @@ class CustomSelection {
     createSecondPointFromPlane(screenX, screenY, firstpoint) {
         this.mouse.x = (screenX / window.innerWidth) * 2 - 1;
         this.mouse.y = -(screenY / window.innerHeight) * 2 + 1;
-        var result = new THREE.Vector3();
+        let result = new THREE.Vector3();
 
         this.raycaster.setFromCamera(this.mouse, this.mainCamera);
         this.plane.setFromNormalAndCoplanarPoint(this.mainCamera.getWorldDirection(this.plane.normal), firstpoint);
@@ -225,7 +228,7 @@ class CustomSelection {
 
         let x = (screenX / window.innerWidth) * 2 - 1;
         let y = -(screenY / window.innerHeight) * 2 + 1;
-        let cameraYOffset = 0.4;
+        let cameraYOffset = mainCameraYPosition;
 
         let vNow = new THREE.Vector3(x, y, 0);
         vNow.unproject(this.mainCamera);
