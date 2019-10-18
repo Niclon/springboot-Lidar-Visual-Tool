@@ -63,8 +63,7 @@ var CustomDragControls = function (_objects, _camera, _domElement) {
 
                 _selected.position.copy(_intersection.sub(_offset)).setLength(_radius);
                 _selected.userData.camera.lookAt(_selected.position);
-                _worldRotation = _selected.userData.camera.getWorldRotation();
-                _selected.rotation.set(_worldRotation._x, _worldRotation._y, _worldRotation._z);
+                _selected.userData.camera.getWorldQuaternion(_selected.quaternion);
 
             }
 

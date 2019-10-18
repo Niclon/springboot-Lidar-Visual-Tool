@@ -6,7 +6,7 @@ class CustomSelectionResizer {
         this.domElement = this.customSelection.renderer.domElement;
         this.scene = this.customSelection.scene;
         this.mouse = new THREE.Vector2();
-        this.camera = this.scene.camera;
+        this.camera = this.customSelection.mainScene.camera;
         this.lineObjects = this.customSelection.lineObjects;
 
         this.selected = null;
