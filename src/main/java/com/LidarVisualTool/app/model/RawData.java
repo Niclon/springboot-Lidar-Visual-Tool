@@ -2,7 +2,7 @@ package com.LidarVisualTool.app.model;
 
 import javax.persistence.*;
 
-@Entity()
+@Entity
 @Table(name = "raw_data_store")
 public class RawData {
     @Id
