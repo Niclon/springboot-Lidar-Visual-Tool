@@ -12,6 +12,8 @@ class LidarPoints {
             images: ['img/360IMGStreet.jpg', 'img/image1.jpg', 'img/image2.jpg', 'img/image3.jpeg'],
         };
         this.createDatGuiUI(props.maxStepNumber);
+        this.texHolder = new THREE.TextureLoader();
+
     }
 
     createDatGuiUI(maxStepNumber) {
@@ -59,31 +61,56 @@ class LidarPoints {
     }
 
     makeBackroundIMG() {
-        let scene = this.mainScene.scene;
-        let bgSphere = scene.getObjectByName("Background");
-        if (bgSphere) {
-            scene.remove(bgSphere);
-            bgSphere.geometry.dispose();
-            bgSphere.material.dispose();
-            bgSphere = undefined;
-        }
-        let photoSphere = new THREE.SphereBufferGeometry(90, 32, 32);
-        photoSphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
-        let sphereMaterial = new THREE.MeshBasicMaterial();
-        let texHolder = new THREE.TextureLoader();
-
-
-        let that = this;
-        texHolder.load('/static/dist/img/360IMGStreet.jpg', (texture) => {
-            sphereMaterial.map = texture;
-            let sphereMesh = new THREE.Mesh(photoSphere, sphereMaterial);
-            sphereMesh.name = "Background";
-            scene.add(sphereMesh);
-            that.takePicturesfromCameras();
-        });
+        // let scene = this.mainScene.scene;
+        // let bgSphere = scene.getObjectByName("Background");
+        // if (bgSphere) {
+        //     scene.remove(bgSphere);
+        //     bgSphere.geometry.dispose();
+        //     bgSphere.material.dispose();
+        //     bgSphere = undefined;
+        // }
+        // let photoSphere = new THREE.SphereBufferGeometry(90, 32, 32);
+        // photoSphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
+        // let sphereMaterial = new THREE.MeshBasicMaterial();
+        // let texHolder = new THREE.TextureLoader();
+        //
+        //
+        // let that = this;
+        // texHolder.load('/static/dist/img/360IMGStreet.jpg', (texture) => {
+        //     sphereMaterial.map = texture;
+        //     let sphereMesh = new THREE.Mesh(photoSphere, sphereMaterial);
+        //     sphereMesh.name = "Background";
+        //     scene.add(sphereMesh);
+        //     that.takePicturesfromCameras();
+        // });
         // scene.children[1].setAttribute('src', this.state.images[this.state.stepNumber % this.state.images.length]);
 
+        let allPromises = [];
+        let allImagePath = [];
+        let frontPicture = {path: '/rawData/image/front/' + menuId + '/' + this.state.stepNumber, index: 0};
+        let backPicture = {path: '/rawData/image/back/' + menuId + '/' + this.state.stepNumber, index: 1};
+        allImagePath.push(frontPicture);
+        allImagePath.push(backPicture);
 
+        let that = this;
+        for (let imagePath of allImagePath) {
+            allPromises.push(new Promise(function (resolve, reject) {
+                that.texHolder.load(imagePath['path'], (texture => {
+                    resolve(texture);
+                }))
+            }));
+        }
+        Promise.all(allPromises)
+            .then(function (arrayOfMaterials) {
+                that.mainScene.frontSphere.material.map = arrayOfMaterials[frontPicture.index];
+                that.mainScene.frontSphere.material.needsUpdate = true;
+                that.mainScene.backSphere.material.map = arrayOfMaterials[backPicture.index];
+                that.mainScene.backSphere.material.needsUpdate = true;
+                that.takePicturesfromCameras();
+                that.loadDataFromServerAndRenderPoints();
+            }, function (error) {
+                console.error("Could not load all textures:", error);
+            });
     }
 
     takePicturesfromCameras() {
@@ -263,8 +290,6 @@ class LidarPoints {
                 let rotationMatrix = that.createRotationMatrix4AroudYAxis(Math.PI);
                 plane1.applyMatrix4(rotationMatrix);
                 plane1.normal.negate();
-                ;
-
                 //bottom
                 vec4 = vec2.clone();
                 vec5 = that.rotateVectorAndReturnPosition(new THREE.Vector3(line.userData.xLength / 2, -line.userData.yLength / 2, 0), line);
@@ -337,8 +362,8 @@ class LidarPoints {
         this.removeSpheres();
         //callback to take picture of selection
         this.makeBackroundIMG();
-        //callbacks for rendering, frustum etc
-        this.loadDataFromServerAndRenderPoints();
+        // //callbacks for rendering, frustum etc
+        // this.loadDataFromServerAndRenderPoints();
     }
 }
 

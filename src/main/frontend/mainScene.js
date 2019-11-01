@@ -18,19 +18,6 @@ class MainScene {
         this.scene.add(this.backSphere);
         this.scene.add(this.frontSphere);
 
-
-        //todo change place and make it dynamic
-        let texHolder = new THREE.TextureLoader();
-        let that = this;
-        texHolder.load('/rawData/image/front/1/0', (texture) => {
-            that.frontSphere.material.map = texture;
-            that.frontSphere.material.needsUpdate = true;
-        });
-        texHolder.load('/rawData/image/back/1/0', (texture) => {
-            that.backSphere.material.map = texture;
-            that.backSphere.material.needsUpdate = true;
-        });
-
         //todo remove
         var geometry = new THREE.BoxGeometry( 1, 1, 1 );
         var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
