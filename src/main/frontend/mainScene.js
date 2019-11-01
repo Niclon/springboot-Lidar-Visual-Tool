@@ -13,6 +13,23 @@ class MainScene {
         this.createBasicControls();
         document.body.appendChild(this.renderer.domElement);
         window.addEventListener( 'resize', this.onWindowResize.bind(this), false );
+        this.backSphere = this.createImageSphere(0);
+        this.frontSphere = this.createImageSphere(Math.PI);
+        this.scene.add(this.backSphere);
+        this.scene.add(this.frontSphere);
+
+
+        //todo change place and make it dynamic
+        let texHolder = new THREE.TextureLoader();
+        let that = this;
+        texHolder.load('/rawData/image/front/1/0', (texture) => {
+            that.frontSphere.material.map = texture;
+            that.frontSphere.material.needsUpdate = true;
+        });
+        texHolder.load('/rawData/image/back/1/0', (texture) => {
+            that.backSphere.material.map = texture;
+            that.backSphere.material.needsUpdate = true;
+        });
 
         //todo remove
         var geometry = new THREE.BoxGeometry( 1, 1, 1 );
@@ -40,6 +57,13 @@ class MainScene {
         this.controls.enableZoom = false;
         this.controls.enablePan = false;
         this.controls.target.y = mainCameraYPosition;
+    }
+
+    createImageSphere(phiStart){
+        let geometry = new THREE.SphereBufferGeometry( 15, 32, 32 ,phiStart,  Math.PI, 0,  Math.PI);
+        let material = new THREE.MeshBasicMaterial( );
+        material.side = THREE.DoubleSide;
+        return new THREE.Mesh( geometry, material );
     }
 }
 

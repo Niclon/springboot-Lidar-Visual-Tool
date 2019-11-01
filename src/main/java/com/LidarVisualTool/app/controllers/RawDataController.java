@@ -42,7 +42,7 @@ public class RawDataController {
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(IOUtils.toByteArray(in));
     }
 
-    @GetMapping(value = "/rawData/image/black/{menuId}/{dataId}")
+    @GetMapping(value = "/rawData/image/back/{menuId}/{dataId}")
     public ResponseEntity<byte[]> getBackImageDataForRawData(
             @PathVariable(value = "menuId") Long menuId,
             @PathVariable(value = "dataId") Long dataId)
