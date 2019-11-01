@@ -21,8 +21,8 @@ class CustomSelection {
         this.lineObjects = [];
         this.additionalCamerasObjects = [];
         this.material = new THREE.LineBasicMaterial({color: 0xff0000, linewidth: 4});
-        this.groupOfCameras = props.groupOfCameras;
-        this.groupOfLines = props.groupOfLines;
+        this.groupOfCameras = props.groups.groupOfCameras;
+        this.groupOfLines = props.groups.groupOfLines;
         this.rotationMatrix = new THREE.Matrix3();
         this.worldStartingDirection = new THREE.Vector3(0, 0, -1);
 
@@ -42,6 +42,7 @@ class CustomSelection {
         var that = this;
         window.onkeydown = function (e) {
             if (!e) e = window.event;
+            //drawing
             if (e.ctrlKey) {
                 if (!that.isFrameStopped) {
                     // document.querySelector('#scatchPlane').setAttribute('visible', 'true');
@@ -51,6 +52,7 @@ class CustomSelection {
                     that.customDrawing.showDrawingCanvas();
                 }
             }
+            // cancel drawing
             if (e.altKey) {
                 if (that.isFrameStopped) {
                     // document.querySelector('#scatchPlane').setAttribute('visible', 'false');
@@ -59,6 +61,7 @@ class CustomSelection {
                     that.customDrawing.clearAndHideCanvas();
                 }
             }
+            // submit border
             if (e.shiftKey) {
                 document.querySelector('#drawingCanvas').setAttribute('visible', 'false');
                 if (that.isFrameStopped) {
@@ -72,7 +75,7 @@ class CustomSelection {
                 }
             }
             // moving selections 'M'
-            if (e.which === 77) {
+            if (e.keyCodeVal === 77) {
                 if (that.dragControls) {
                     if (that.isDraggingControlEnabled) {
                         that.dragControls.setCursorToAuto();
@@ -85,7 +88,7 @@ class CustomSelection {
                 }
             }
             //deletion of selection 'DEL'
-            if (e.which === 46) {
+            if (e.keyCodeVal === 46) {
                 if (that.dragControls) {
                     if (that.isDraggingControlEnabled && false === that.isFrameStopped) {
                         document.dispatchEvent(that.deletionEvent);
@@ -95,7 +98,7 @@ class CustomSelection {
                 }
             }
             //for resizing key 'N'
-            if (e.which === 78) {
+            if (e.keyCodeVal === 78) {
                 if (that.customSelectionResizer) {
                     if (that.customSelectionResizer.enabled && false === that.isFrameStopped) {
                         that.customSelectionResizer.disable();

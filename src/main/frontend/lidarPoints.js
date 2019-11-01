@@ -9,33 +9,10 @@ class LidarPoints {
             stepNumber: props.stepNumber,
             isReplay: props.isReplay,
             menuId: props.menuId,
-            images: ['img/360IMGStreet.jpg', 'img/image1.jpg', 'img/image2.jpg', 'img/image3.jpeg'],
         };
         this.createDatGuiUI(props.maxStepNumber);
         this.texHolder = new THREE.TextureLoader();
-
-    }
-
-    createDatGuiUI(maxStepNumber) {
-        const dat = require('dat.gui');
-        const gui = new dat.GUI();
-        var guiFunction = function () {
-            this.stepNumber = 0;
-        };
-        let variable = new guiFunction();
-
-        let stepNumber = gui.add(variable, 'stepNumber').min(0).max(maxStepNumber).step(1);
-        let that = this;
-
-        stepNumber.onChange(function (value) {
-            if (value === that.state.stepNumber) {
-                return;
-            }
-            that.state.stepNumber = value;
-            that.render();
-        });
-        let customContainer = document.querySelector('#my-gui-container');
-        if (customContainer != null) customContainer.appendChild(gui.domElement);
+        this.groups = props.groups;
     }
 
     removeSpheres() {
@@ -106,27 +83,24 @@ class LidarPoints {
                 that.mainScene.frontSphere.material.needsUpdate = true;
                 that.mainScene.backSphere.material.map = arrayOfMaterials[backPicture.index];
                 that.mainScene.backSphere.material.needsUpdate = true;
-                that.takePicturesfromCameras();
+                that.takePicturesFromCameras();
                 that.loadDataFromServerAndRenderPoints();
             }, function (error) {
                 console.error("Could not load all textures:", error);
             });
     }
 
-    takePicturesfromCameras() {
+    takePicturesFromCameras() {
         let scene = this.mainScene.scene;
         let renderer = this.mainScene.renderer;
 
         if (renderer == null) {
             return;
         }
-        // let camera;
-        let groupOfCameras = scene.getObjectByName("groupOfCameras");
-        let groupOfLines = scene.getObjectByName("groupOfLines");
 
-        if (groupOfCameras) {
-            if (groupOfCameras.children.length > 0) {
-                this.createImageFromCameras(scene, renderer, groupOfCameras, groupOfLines);
+        if (this.groups.groupOfCameras) {
+            if (this.groups.groupOfCameras.children.length > 0) {
+                this.createImageFromCameras(scene, renderer, this.groups.groupOfCameras, this.groups.groupOfLines);
             }
         }
     }
@@ -180,7 +154,7 @@ class LidarPoints {
 
     renderPointsFromData() {
         let scene = this.mainScene.scene;
-        let spheres = scene.getObjectByName("groupOfPoints");
+        let spheres = this.groups.groupOfPoints;
 
         if (!spheres) {
             return;
@@ -364,6 +338,87 @@ class LidarPoints {
         this.makeBackroundIMG();
         // //callbacks for rendering, frustum etc
         // this.loadDataFromServerAndRenderPoints();
+    }
+
+    createDatGuiUI(maxStepNumber) {
+        const dat = require('dat.gui');
+        const gui = new dat.GUI({ autoPlace: false });
+        const guiAction = new dat.GUI({ autoPlace: false });
+        let that = this;
+        let simulateKeyDown = function (keycode, isCtrl, isAlt, isShift) {
+            var e = new KeyboardEvent("keydown", {
+                bubbles: true,
+                cancelable: true,
+                char: String.fromCharCode(keycode),
+                key: String.fromCharCode(keycode),
+                shiftKey: isShift,
+                ctrlKey: isCtrl,
+                altKey: isAlt
+            });
+            Object.defineProperty(e, 'keyCode', {
+                get: function () {
+                    return this.keyCodeVal;
+                }
+            });
+            e.keyCodeVal = keycode;
+            document.dispatchEvent(e);
+        };
+
+        var guiFunction = function () {
+            this.stepNumber = 0;
+            this.startDrawing = function () {
+                // ctrl key
+                simulateKeyDown(0, true, false, false)
+
+            };
+            this.discardDrawingChanges = function () {
+                // alt key
+                simulateKeyDown(0, false, true, false)
+
+            };
+            this.submitDrawing = function () {
+                // shift key
+                simulateKeyDown(0, false, false, true)
+            };
+            this.enableMovingOfBorders = function () {
+                // M key
+                simulateKeyDown(77, false, false, false)
+            };
+            this.enableResizingOfBorders = function () {
+                // N key
+                simulateKeyDown(78, false, false, false);
+            };
+            this.howToDeleteBorder = function () {
+                // delete key but create border
+                alert("First you need to have enabled moving of borders and then you point to wanted border and click delete key on your keyboard")
+            }
+        };
+        let variable = new guiFunction();
+
+
+        let stepNumber = gui.add(variable, 'stepNumber').min(0).max(maxStepNumber).step(1);
+
+        let actionFolder = guiAction.addFolder('Actions');
+        actionFolder.add(variable, 'startDrawing').name("Start drawing");
+        actionFolder.add(variable, 'discardDrawingChanges').name('Discard drawing changes');
+        actionFolder.add(variable, 'submitDrawing').name('Submit drawing');
+        actionFolder.add(variable, 'enableMovingOfBorders').name('Enable/Disable moving of borders');
+        actionFolder.add(variable, 'enableResizingOfBorders').name('Enable/Disable resizing of borders');
+        actionFolder.add(variable, 'howToDeleteBorder').name('How to delete borders');
+
+
+        stepNumber.onChange(function (value) {
+            if (value === that.state.stepNumber) {
+                return;
+            }
+            that.state.stepNumber = value;
+            that.render();
+        });
+        let customContainer = document.querySelector('#my-gui-slider-container');
+        if (customContainer != null) customContainer.appendChild(gui.domElement);
+        let customActionContainer = document.querySelector('#my-gui-action-container');
+        if (customActionContainer != null) customActionContainer.appendChild(guiAction.domElement);
+
     }
 }
 

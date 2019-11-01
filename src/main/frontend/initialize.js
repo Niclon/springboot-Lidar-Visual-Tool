@@ -17,7 +17,6 @@ var groupOfPoints = new THREE.Group();
 var groupOfCameras = new THREE.Group();
 
 
-
 document.addEventListener('DOMContentLoaded', () => {
 
     setUpScene();
@@ -26,8 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
     var customSelection = new CustomSelection({
         customDrawing: customDrawing,
         scene: mainScene,
-        groupOfCameras: groupOfCameras,
-        groupOfLines: groupOfLines
+        groups: {
+            groupOfCameras,
+            groupOfLines
+        }
     });
     window.addEventListener('resize', function () {
         document.getElementById("drawingCanvasDiv").innerHTML = '';
@@ -38,7 +39,12 @@ document.addEventListener('DOMContentLoaded', () => {
         stepNumber: 0,
         maxStepNumber: maxOfSlider,
         menuId: menuId,
-        mainScene: mainScene
+        mainScene: mainScene,
+        groups: {
+            groupOfCameras,
+            groupOfLines,
+            groupOfPoints
+        }
     });
     lidarPoints.render();
     mainScene.animate();

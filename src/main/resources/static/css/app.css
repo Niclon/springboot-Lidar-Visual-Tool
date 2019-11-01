@@ -3,12 +3,21 @@
     height: 100%;
     position: relative;
 }
-#my-gui-container {
+#my-gui-slider-container {
     /*width: 60%;*/
     height: 80px;
     position: absolute;
     z-index: 1000000 !important;
-    left: 300px
+    left: 260px;
+    /*width: 70%*/
+}
+#my-gui-action-container {
+    /*width: 60%;*/
+    height: 80px;
+    position: absolute;
+    z-index: 1000000 !important;
+    /*left: 300px*/
+    width: 30%
 }
 
 #drawingCanvas {
@@ -21,28 +30,31 @@
     visibility: hidden;
 }
 
-.dg .property-name {
+#my-gui-slider-container .dg .property-name {
     width: 20% !important;
 }
 
-.dg .slider {
+#my-gui-slider-container .dg .slider {
     width: 87% !important;
 }
 
-.dg .c {
+#my-gui-slider-container .dg .c {
     width: 80% !important;
 }
 
-.dg .has-slider input[type=text] {
+#my-gui-slider-container .dg .has-slider input[type=text] {
     width: 10% !important;
 }
 
-.dg.main.a {
-    width: 600px !important;
+#my-gui-slider-container .dg.main{
+    width: 800px !important;
+}
+#my-gui-slider-container .dg.main.a {
+    width: 800px !important;
 }
 
-.close-button.close-bottom {
-    width: 600px !important;
+#my-gui-slider-container .close-button.close-bottom {
+    width: 800px !important;
 }
 
 

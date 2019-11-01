@@ -33,12 +33,12 @@ class CustomDrawing {
             }
             that.redraw();
         });
-        document.querySelector('#drawingCanvas').addEventListener("mouseleave", function (e) {
-            that.paint = false;
-            that.setEndpointToNull();
-            that.setStartpointToNull();
-            that.redraw();
-        });
+        // document.querySelector('#drawingCanvas').addEventListener("mouseleave", function (e) {
+        //     that.paint = false;
+        //     that.setEndpointToNull();
+        //     that.setStartpointToNull();
+        //     that.redraw();
+        // });
     }
 
     initCanvas() {
