@@ -66,11 +66,22 @@ class CustomSelection {
                 document.querySelector('#drawingCanvas').setAttribute('visible', 'false');
                 if (that.isFrameStopped) {
                     if (that.customDrawing.endPointX != null && that.customDrawing.startPointX != null) {
-                        that.makeBorder();
-                        // document.querySelector('#scatchPlane').setAttribute('visible', 'false');
-                        that.isFrameStopped = false;
-                        that.mainScene.animate();
-                        that.customDrawing.clearAndHideCanvas();
+                        var selectedItemName = prompt("Please enter selected item name (required):", "Car");
+                        if (selectedItemName !== null && selectedItemName.length >= 1) {
+                            that.createItemNameInDatabaseReturnPromise(selectedItemName)
+                                .then(function (selectedItemNameFromDB) {
+                                    that.makeBorder(selectedItemNameFromDB);
+                                    that.isFrameStopped = false;
+                                    that.mainScene.animate();
+                                    that.customDrawing.clearAndHideCanvas();
+                                });
+                        } else {
+                            that.makeBorder();
+                            // document.querySelector('#scatchPlane').setAttribute('visible', 'false');
+                            that.isFrameStopped = false;
+                            that.mainScene.animate();
+                            that.customDrawing.clearAndHideCanvas();
+                        }
                     }
                 }
             }
@@ -133,7 +144,7 @@ class CustomSelection {
         });
     }
 
-    makeBorder() {
+    makeBorder(selectedItemNameFromDB) {
 
         // this.scene = document.querySelector('a-scene');
         // this.renderer = this.scene.renderer;
@@ -182,7 +193,8 @@ class CustomSelection {
             xLength: xLength,
             yLength: yLength,
             name: '_Selection_' + this.selectionCounter,
-            rotation: line.rotation
+            rotation: line.rotation,
+            selectedItemNameObject: selectedItemNameFromDB
         };
         this.selectionCounter += 1;
         this.groupOfLines.add(line);
@@ -239,6 +251,23 @@ class CustomSelection {
         let length = Math.sqrt(vNow.x ** 2 + (vNow.y - cameraYOffset) ** 2 + vNow.z ** 2);
         let scalingFactor = 3 / Math.abs(length);
         return new THREE.Vector3((scalingFactor * vNow.x), ((scalingFactor * (vNow.y - cameraYOffset)) + cameraYOffset), (scalingFactor * vNow.z));
+    }
+
+    createItemNameInDatabaseReturnPromise(itemName) {
+        return new Promise(function (resolve, reject) {
+            let request = new XMLHttpRequest();
+            request.open('POST', '/selectedItem/save/name', true);
+            request.onreadystatechange = function () {
+                if (request.readyState === 4) {
+                    if (request.status === 200) {
+                        resolve(JSON.parse(request.response));
+                    } else {
+                        reject();
+                    }
+                }
+            };
+            request.send(itemName);
+        });
     }
 
 }

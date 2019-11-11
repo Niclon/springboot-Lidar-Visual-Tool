@@ -1,14 +1,8 @@
-// import 'aframe';
-// import './components/aframe-custom';
-// import ReactDom from 'react'
-// import h from 'preact';
 import LidarPoints from './lidarPoints';
 import CustomSelection from "./customSelection";
 import MainScene from "./mainScene";
 import CustomDrawing from "./customDrawing";
-// var React = require('react');
-// var ReactDOM = require('react-dom');
-// var Main = require('./main');
+
 var THREE = require('three');
 var mainScene;
 var scene;

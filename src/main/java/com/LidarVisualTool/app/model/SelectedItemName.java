@@ -12,6 +12,13 @@ public class SelectedItemName {
     @Column(name = "item_name")
     private String itemName;
 
+    public SelectedItemName() {
+    }
+
+    public SelectedItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
     public Long getId() {
         return id;
     }

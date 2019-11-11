@@ -59,6 +59,8 @@ class CustomDrawing {
         this.canvasContext.clearRect(0, 0, this.canvasContext.canvas.width, this.canvasContext.canvas.height); // Clears the canvas
         this.canvasContext.strokeStyle = "#df4b26";
         this.canvasContext.lineJoin = "round";
+        this.canvasContext.fillStyle = "rgba(0, 255, 255, 0.5)";
+        this.canvasContext.fill();
 
         this.canvasContext.lineWidth = 5;
         if (this.endPointX) {

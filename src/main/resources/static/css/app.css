@@ -57,6 +57,9 @@
     width: 800px !important;
 }
 
+#my-gui-action-container .cr.function span{
+    width: 100%;
+}
 
 #loadModal {
     width: 100%;
