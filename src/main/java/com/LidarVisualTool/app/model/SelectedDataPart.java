@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "selected_data_parts")
-public class SelectedDataParts {
+public class SelectedDataPart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,6 +19,10 @@ public class SelectedDataParts {
 
     @Column(name = "raw_selected_data")
     private String rawSelectedDataArray;
+
+    @ManyToOne
+    @JoinColumn(name = "raw_data_id",nullable = false)
+    private RawData rawData;
 
     public Long getId() {
         return id;
@@ -50,5 +54,13 @@ public class SelectedDataParts {
 
     public void setRawSelectedDataArray(String rawSelectedDataArray) {
         this.rawSelectedDataArray = rawSelectedDataArray;
+    }
+
+    public RawData getRawData() {
+        return rawData;
+    }
+
+    public void setRawData(RawData rawData) {
+        this.rawData = rawData;
     }
 }

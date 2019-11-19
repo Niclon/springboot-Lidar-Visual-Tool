@@ -1,5 +1,6 @@
 package com.LidarVisualTool.app.controllers;
 
+import com.LidarVisualTool.app.dto.SelectedDataRequestDto;
 import com.LidarVisualTool.app.model.SelectedItemName;
 import com.LidarVisualTool.app.service.api.SelectedItemService;
 import org.springframework.http.HttpStatus;
@@ -7,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class SelectedItemController {
@@ -17,7 +20,15 @@ public class SelectedItemController {
     }
 
     @PostMapping("/selectedItem/save/name")
-    public ResponseEntity<SelectedItemName> saveSelectedItemNameBasedOnName(@RequestBody String selectedItemName){
+    public ResponseEntity<SelectedItemName> saveSelectedItemNameBasedOnName(@RequestBody String selectedItemName) {
         return new ResponseEntity<>(selectedItemService.saveItemNameAndReturnName(selectedItemName), HttpStatus.OK);
     }
+
+    @PostMapping("/selectedItem/save/data-part")
+    public ResponseEntity saveSelectedItemDataParts(@RequestBody List<SelectedDataRequestDto> selectedDataRequestDtos) {
+        selectedItemService.saveItemDataPartsFromDto(selectedDataRequestDtos);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
 }

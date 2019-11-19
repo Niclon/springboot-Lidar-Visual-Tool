@@ -11,4 +11,7 @@ public interface RawDataStoreRepository extends JpaRepository<RawData, Long> {
 
     @Query(value = "SELECT r.rawDataArray FROM RawData r WHERE r.mainMenu.id = ?1 AND r.dataId = ?2")
     String getRawDataByMainMenuIdAndDataId(Long mainMenuId, Long dataId);
+
+    @Query("SELECT r.id FROM RawData r where r.mainMenu.id = ?1 AND r.dataId = ?2")
+    Long findIdByMainMenuIdAndStepNumber(Long mainMenuId, Long dataId);
 }

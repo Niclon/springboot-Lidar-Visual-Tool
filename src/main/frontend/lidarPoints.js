@@ -38,7 +38,7 @@ class LidarPoints {
         }
     }
 
-    makeBackroundIMG() {
+    makeBackroundIMGWithLoadDataCallBack(callBack) {
         // let scene = this.mainScene.scene;
         // let bgSphere = scene.getObjectByName("Background");
         // if (bgSphere) {
@@ -85,7 +85,7 @@ class LidarPoints {
                 that.mainScene.backSphere.material.map = arrayOfMaterials[backPicture.index];
                 that.mainScene.backSphere.material.needsUpdate = true;
                 that.takePicturesFromCameras();
-                that.loadDataFromServerAndRenderPoints();
+                callBack();
             }, function (error) {
                 console.error("Could not load all textures:", error);
             });
@@ -106,12 +106,13 @@ class LidarPoints {
         }
     }
 
+    //todo rewrite logic of sending images
     createImageFromCameras(scene, renderer, groupOfCameras, groupOfLines) {
         let that = this;
         let dataToSend = [];
 
         for (let i = 0; i < groupOfLines.children.length; i++) {
-            renderer.render(scene.object3D, groupOfLines.children[i].userData.camera);
+            renderer.render(scene, groupOfLines.children[i].userData.camera);
             let dataURL = renderer.domElement.toDataURL();
             dataToSend.push({
                 key: 'Frame_' + that.state.stepNumber + groupOfLines.children[i].userData.name,
@@ -131,12 +132,11 @@ class LidarPoints {
     loadDataFromServerAndRenderPoints() {
         let that = this;
         let request = new XMLHttpRequest();
-        if (this.state.isReplay) {
-            request.open('GET', '/dataStoredReplay/' + this.state.stepNumber, true);  // `false` makes the request synchronous
+        if (!this.state.isReplay) {
+            // request.open('GET', '/dataStored/' + this.state.stepNumber, true);
+            request.open('GET', '/rawData/' + this.state.menuId + '/' + this.state.stepNumber, true);
         } else {
-            // request.open('GET', '/dataStored/' + this.state.stepNumber, true);  // `false` makes the request synchronous
-            request.open('GET', '/rawData/' + this.state.menuId + '/' + this.state.stepNumber, true);  // `false` makes the request synchronous
-
+            request.open('GET', '/dataStoredReplay/' + this.state.stepNumber, true);
         }
 
         request.setRequestHeader('Content-Type', 'application/json');
@@ -154,7 +154,6 @@ class LidarPoints {
     }
 
     renderPointsFromData() {
-        let scene = this.mainScene.scene;
         let spheres = this.groups.groupOfPoints;
 
         if (!spheres) {
@@ -234,19 +233,18 @@ class LidarPoints {
 
     getAndSendSelectedDataToBackend() {
         const http = new XMLHttpRequest();
-        http.open('POST', '/SelectedData/');
+        http.open('POST', '/selectedItem/save/data-part');
         http.setRequestHeader('Content-type', 'application/json');
         http.send(JSON.stringify(this.createFrustumForShapeAndGetData()));
     }
 
     createFrustumForShapeAndGetData() {
-        let scene = this.mainScene.scene;
-        let spheres = scene.getObjectByName("groupOfPoints");
-        let lines = scene.getObjectByName('groupOfLines');
+        let spheres = this.groups.groupOfPoints;
+        let lines = this.groups.groupOfLines;
         let cameraPosition = new THREE.Vector3(0, 0.4, 0);
         let vec1, vec2, vec3, vec4, vec5, vec6, vec7, vec8, vec9, vec10, vec11, vec12;
         var plane1, plane2, plane3, plane4;
-        let result = {};
+        let result = [];
 
         if (!lines) {
             return;
@@ -299,17 +297,25 @@ class LidarPoints {
                 };
                 let eachResult = {};
                 eachResult.line = lineForRecreation;
+                let selectedSpheresData = {};
                 spheres.children.forEach(function (sphere) {
                     if (frustum.containsPoint(sphere.position)) {
-                        eachResult[index] = sphere.position;
+                        selectedSpheresData[index] = [sphere.position.x, sphere.position.y, sphere.position.z];
                         index++;
                     }
                 });
-                let name = 'LidarData_' + that.state.stepNumber + line.userData.name;
-                result[name] = eachResult;
+                eachResult.selectedItemSpheresData = selectedSpheresData;
+                // todo add picture ids
+
+                let selectedDataRequestDto = {
+                    menuId: menuId,
+                    stepNumber: that.state.stepNumber,
+                    selectedItemNameObject: line.userData.selectedItemNameObject,
+                    rawSelectedDataWithLine: JSON.stringify(eachResult)
+                };
+                result.push(selectedDataRequestDto);
 
             });
-
         }
         return result;
 
@@ -336,7 +342,7 @@ class LidarPoints {
         this.showLoadingModal();
         this.removeSpheres();
         //callback to take picture of selection
-        this.makeBackroundIMG();
+        this.makeBackroundIMGWithLoadDataCallBack(this.loadDataFromServerAndRenderPoints.bind(this));
         // //callbacks for rendering, frustum etc
         // this.loadDataFromServerAndRenderPoints();
     }

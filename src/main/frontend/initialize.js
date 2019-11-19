@@ -24,15 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
             groupOfLines
         }
     });
-    window.addEventListener('resize', function () {
-        document.getElementById("drawingCanvasDiv").innerHTML = '';
-        customDrawing = new CustomDrawing();
-        customSelection.customDrawing = customDrawing;
-    });
     var lidarPoints = new LidarPoints({
         stepNumber: 0,
         maxStepNumber: maxOfSlider,
         menuId: menuId,
+        isReplay: false,
         mainScene: mainScene,
         groups: {
             groupOfCameras,
@@ -43,6 +39,13 @@ document.addEventListener('DOMContentLoaded', () => {
     lidarPoints.render();
     mainScene.animate();
 
+
+
+    window.addEventListener('resize', function () {
+        document.getElementById("drawingCanvasDiv").innerHTML = '';
+        customDrawing = new CustomDrawing();
+        customSelection.customDrawing = customDrawing;
+    });
 
     function setUpScene() {
         // scene = document.querySelector('a-scene');

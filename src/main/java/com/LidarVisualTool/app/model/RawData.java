@@ -19,6 +19,13 @@ public class RawData {
     @Column(name = "data_id")
     private Long dataId;
 
+    public RawData() {
+    }
+
+    public RawData(Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }
