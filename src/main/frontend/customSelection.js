@@ -86,7 +86,7 @@ class CustomSelection {
                 }
             }
             // moving selections 'M'
-            if (e.keyCodeVal === 77) {
+            if (e.keyCodeVal === 77 || e.key.toLocaleLowerCase() === 'M'.toLocaleLowerCase()) {
                 if (that.dragControls) {
                     if (that.isDraggingControlEnabled) {
                         that.dragControls.setCursorToAuto();
@@ -99,7 +99,7 @@ class CustomSelection {
                 }
             }
             //deletion of selection 'DEL'
-            if (e.keyCodeVal === 46) {
+            if (e.keyCodeVal === 46 || e.key.toLocaleLowerCase() === 'Delete'.toLocaleLowerCase()) {
                 if (that.dragControls) {
                     if (that.isDraggingControlEnabled && false === that.isFrameStopped) {
                         document.dispatchEvent(that.deletionEvent);
@@ -109,7 +109,7 @@ class CustomSelection {
                 }
             }
             //for resizing key 'N'
-            if (e.keyCodeVal === 78) {
+            if (e.keyCodeVal === 78 || e.key.toLocaleLowerCase() === 'N'.toLocaleLowerCase()) {
                 if (that.customSelectionResizer) {
                     if (that.customSelectionResizer.enabled && false === that.isFrameStopped) {
                         that.customSelectionResizer.disable();
@@ -179,6 +179,7 @@ class CustomSelection {
         let camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 100);
         camera.position.set(0, mainCameraYPosition, 0);
         camera.lookAt(reultVec);
+        camera.userData.cameraHashUuID = this.uuidv4();
         this.groupOfCameras.add(camera);
         this.additionalCamerasObjects.push(camera);
         let worldRotation = new THREE.Quaternion();
@@ -208,6 +209,13 @@ class CustomSelection {
         this.dragControls = new CustomDragControls(this.lineObjects, this.mainCamera, this.renderer.domElement);
         this.isDraggingControlEnabled = false;
         this.dragControls.deactivate();
+    }
+
+    uuidv4() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
     }
 
     create3DLine(xLength, yLength) {

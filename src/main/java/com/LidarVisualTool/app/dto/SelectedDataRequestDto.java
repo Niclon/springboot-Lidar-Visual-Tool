@@ -7,6 +7,8 @@ public class SelectedDataRequestDto {
     private Long menuId;
 //    data_id
     private Long stepNumber;
+//    pictureId
+    private Long pictureId;
     private SelectedItemName selectedItemNameObject;
     private String rawSelectedDataWithLine;
 
@@ -40,5 +42,13 @@ public class SelectedDataRequestDto {
 
     public void setMenuId(Long menuId) {
         this.menuId = menuId;
+    }
+
+    public Long getPictureId() {
+        return pictureId;
+    }
+
+    public void setPictureId(Long pictureId) {
+        this.pictureId = pictureId;
     }
 }

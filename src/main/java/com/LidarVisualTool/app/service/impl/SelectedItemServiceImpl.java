@@ -1,34 +1,45 @@
 package com.LidarVisualTool.app.service.impl;
 
+import com.LidarVisualTool.app.dto.SavePictureRequestDto;
+import com.LidarVisualTool.app.dto.SavedPictureResponseDto;
 import com.LidarVisualTool.app.dto.SelectedDataRequestDto;
+import com.LidarVisualTool.app.helper.FileSaverHelper;
 import com.LidarVisualTool.app.model.RawData;
 import com.LidarVisualTool.app.model.SelectedDataPart;
 import com.LidarVisualTool.app.model.SelectedItemName;
+import com.LidarVisualTool.app.model.SelectedItemPicture;
 import com.LidarVisualTool.app.repository.RawDataStoreRepository;
 import com.LidarVisualTool.app.repository.SelectedItemDataPartRepository;
 import com.LidarVisualTool.app.repository.SelectedItemNameRepository;
+import com.LidarVisualTool.app.repository.SelectedItemPictureRepository;
 import com.LidarVisualTool.app.service.api.SelectedItemService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class SelectedItemServiceImpl implements SelectedItemService {
-    private SelectedItemNameRepository selectedItemRepository;
+    private SelectedItemNameRepository selectedItemNameRepository;
     private SelectedItemDataPartRepository selectedItemDataPartRepository;
     private RawDataStoreRepository rawDataStoreRepository;
+    private SelectedItemPictureRepository selectedItemPictureRepository;
+    private FileSaverHelper fileSaverHelper;
 
-    public SelectedItemServiceImpl(SelectedItemNameRepository selectedItemRepository,
+    public SelectedItemServiceImpl(SelectedItemNameRepository selectedItemNameRepository,
                                    SelectedItemDataPartRepository selectedItemDataPartRepository,
-                                   RawDataStoreRepository rawDataStoreRepository) {
-        this.selectedItemRepository = selectedItemRepository;
+                                   RawDataStoreRepository rawDataStoreRepository,
+                                   SelectedItemPictureRepository selectedItemPictureRepository, FileSaverHelper fileSaverHelper) {
+        this.selectedItemNameRepository = selectedItemNameRepository;
         this.selectedItemDataPartRepository = selectedItemDataPartRepository;
         this.rawDataStoreRepository = rawDataStoreRepository;
+        this.selectedItemPictureRepository = selectedItemPictureRepository;
+        this.fileSaverHelper = fileSaverHelper;
     }
 
     @Override
     public SelectedItemName saveItemNameAndReturnName(String selectedItemName) {
-        return selectedItemRepository.save(new SelectedItemName(selectedItemName));
+        return selectedItemNameRepository.save(new SelectedItemName(selectedItemName));
     }
 
     @Override
@@ -39,11 +50,29 @@ public class SelectedItemServiceImpl implements SelectedItemService {
             selectedDataPart.setRawData(new RawData(rawDataId));
             selectedDataPart.setRawSelectedDataArray(dataPartDto.getRawSelectedDataWithLine());
             selectedDataPart.setSelectedItemName(dataPartDto.getSelectedItemNameObject());
-//            todo
-//            selectedDataPart.setSelectedItemPictures();
+            selectedDataPart.setSelectedItemPicture(selectedItemPictureRepository.getOne(dataPartDto.getPictureId()));
             selectedItemDataPartRepository.save(selectedDataPart);
         }
+    }
 
+    @Override
+    public List<SavedPictureResponseDto> saveItemPictureAndReturn(List<SavePictureRequestDto> savePictureRequestDto) {
+        List<SavedPictureResponseDto> resultList = new ArrayList<>();
 
+        for (SavePictureRequestDto pictureRequestDto : savePictureRequestDto) {
+            SavedPictureResponseDto savedPictureResponseDto = new SavedPictureResponseDto();
+            SelectedItemPicture newItemPicture = new SelectedItemPicture();
+
+            newItemPicture.setPicturePath(
+                    fileSaverHelper.createImageAndReturnPathFromBase64(
+                            pictureRequestDto.getPictureInBase64()));
+            newItemPicture = selectedItemPictureRepository.save(newItemPicture);
+
+            savedPictureResponseDto.setCameraHashFromFrontEnd(pictureRequestDto.getCameraHashUuID());
+            savedPictureResponseDto.setNewlySavedPictureId(newItemPicture.getId());
+            resultList.add(savedPictureResponseDto);
+        }
+
+        return resultList;
     }
 }

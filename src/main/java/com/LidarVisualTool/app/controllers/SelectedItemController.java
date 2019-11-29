@@ -1,5 +1,7 @@
 package com.LidarVisualTool.app.controllers;
 
+import com.LidarVisualTool.app.dto.SavePictureRequestDto;
+import com.LidarVisualTool.app.dto.SavedPictureResponseDto;
 import com.LidarVisualTool.app.dto.SelectedDataRequestDto;
 import com.LidarVisualTool.app.model.SelectedItemName;
 import com.LidarVisualTool.app.service.api.SelectedItemService;
@@ -28,6 +30,12 @@ public class SelectedItemController {
     public ResponseEntity saveSelectedItemDataParts(@RequestBody List<SelectedDataRequestDto> selectedDataRequestDtos) {
         selectedItemService.saveItemDataPartsFromDto(selectedDataRequestDtos);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/selectedItem/save/camera-images")
+    public ResponseEntity<List<SavedPictureResponseDto>> savePicturesFromCameras(@RequestBody List<SavePictureRequestDto> savePictureRequestDtos){
+        List<SavedPictureResponseDto> savedPictureResponseDtos = selectedItemService.saveItemPictureAndReturn(savePictureRequestDtos);
+        return new ResponseEntity<>(savedPictureResponseDtos, HttpStatus.OK);
     }
 
 

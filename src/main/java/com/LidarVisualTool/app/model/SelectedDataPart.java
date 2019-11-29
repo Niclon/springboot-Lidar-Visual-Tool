@@ -15,7 +15,7 @@ public class SelectedDataPart {
 
     @OneToOne
     @JoinColumn(name = "selected_item_picture_id", nullable = false)
-    private SelectedItemPictures selectedItemPictures;
+    private SelectedItemPicture selectedItemPicture;
 
     @Column(name = "raw_selected_data")
     private String rawSelectedDataArray;
@@ -40,12 +40,12 @@ public class SelectedDataPart {
         this.selectedItemName = selectedItemName;
     }
 
-    public SelectedItemPictures getSelectedItemPictures() {
-        return selectedItemPictures;
+    public SelectedItemPicture getSelectedItemPicture() {
+        return selectedItemPicture;
     }
 
-    public void setSelectedItemPictures(SelectedItemPictures selectedItemPictures) {
-        this.selectedItemPictures = selectedItemPictures;
+    public void setSelectedItemPicture(SelectedItemPicture selectedItemPicture) {
+        this.selectedItemPicture = selectedItemPicture;
     }
 
     public String getRawSelectedDataArray() {

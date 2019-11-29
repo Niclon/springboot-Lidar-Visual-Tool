@@ -1,0 +1,1 @@
+ALTER TABLE selected_item_pictures RENAME COLUMN picture_name TO picture_path;

@@ -39,30 +39,6 @@ class LidarPoints {
     }
 
     makeBackroundIMGWithLoadDataCallBack(callBack) {
-        // let scene = this.mainScene.scene;
-        // let bgSphere = scene.getObjectByName("Background");
-        // if (bgSphere) {
-        //     scene.remove(bgSphere);
-        //     bgSphere.geometry.dispose();
-        //     bgSphere.material.dispose();
-        //     bgSphere = undefined;
-        // }
-        // let photoSphere = new THREE.SphereBufferGeometry(90, 32, 32);
-        // photoSphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
-        // let sphereMaterial = new THREE.MeshBasicMaterial();
-        // let texHolder = new THREE.TextureLoader();
-        //
-        //
-        // let that = this;
-        // texHolder.load('/static/dist/img/360IMGStreet.jpg', (texture) => {
-        //     sphereMaterial.map = texture;
-        //     let sphereMesh = new THREE.Mesh(photoSphere, sphereMaterial);
-        //     sphereMesh.name = "Background";
-        //     scene.add(sphereMesh);
-        //     that.takePicturesfromCameras();
-        // });
-        // scene.children[1].setAttribute('src', this.state.images[this.state.stepNumber % this.state.images.length]);
-
         let allPromises = [];
         let allImagePath = [];
         let frontPicture = {path: '/rawData/image/front/' + menuId + '/' + this.state.stepNumber, index: 0};
@@ -79,12 +55,12 @@ class LidarPoints {
             }));
         }
         Promise.all(allPromises)
-            .then(function (arrayOfMaterials) {
+            .then( async function (arrayOfMaterials) {
                 that.mainScene.frontSphere.material.map = arrayOfMaterials[frontPicture.index];
                 that.mainScene.frontSphere.material.needsUpdate = true;
                 that.mainScene.backSphere.material.map = arrayOfMaterials[backPicture.index];
                 that.mainScene.backSphere.material.needsUpdate = true;
-                that.takePicturesFromCameras();
+                await that.takePicturesFromCameras();
                 callBack();
             }, function (error) {
                 console.error("Could not load all textures:", error);
@@ -101,30 +77,61 @@ class LidarPoints {
 
         if (this.groups.groupOfCameras) {
             if (this.groups.groupOfCameras.children.length > 0) {
-                this.createImageFromCameras(scene, renderer, this.groups.groupOfCameras, this.groups.groupOfLines);
+                this.createImageFromCameras(scene, renderer);
             }
         }
     }
 
-    //todo rewrite logic of sending images
-    createImageFromCameras(scene, renderer, groupOfCameras, groupOfLines) {
-        let that = this;
+    async createImageFromCameras(scene, renderer) {
         let dataToSend = [];
-
-        for (let i = 0; i < groupOfLines.children.length; i++) {
-            renderer.render(scene, groupOfLines.children[i].userData.camera);
+        let numberOfLines = this.groups.groupOfLines.children.length;
+        for (let i = 0; i < numberOfLines; i++) {
+            let camera = this.groups.groupOfLines.children[i].userData.camera;
+            renderer.render(scene, camera);
             let dataURL = renderer.domElement.toDataURL();
             dataToSend.push({
-                key: 'Frame_' + that.state.stepNumber + groupOfLines.children[i].userData.name,
-                value: dataURL
+                cameraHashUuID: camera.userData.cameraHashUuID,
+                pictureInBase64: dataURL
             });
         }
-        this.sendImagesToServer(JSON.stringify(dataToSend));
+        let imageDataDtos = await this.sendImagesToServerAndWaitForResultWithImageId(JSON.stringify(dataToSend));
+        let imageDataDtosLength = imageDataDtos.length;
+        for (let j = 0; j < numberOfLines; j++) {
+            let line = this.groups.groupOfLines.children[j];
+            let cameraHash = line.userData.camera.userData.cameraHashUuID;
+            for (let k = 0; k < imageDataDtosLength; k++){
+                if (imageDataDtos[k]["cameraHashFromFrontEnd"] === cameraHash){
+                    line.userData.newlySavedPictureId = imageDataDtos[k]["newlySavedPictureId"];
+                    console.log("just set " + imageDataDtos[k]["newlySavedPictureId"]);
+                    break;
+                }
+            }
+        }
+
+    }
+    // async sleep(msec) {
+    //     return new Promise(resolve => setTimeout(resolve, msec));
+    // }
+
+    sendImagesToServerAndWaitForResultWithImageId(dataToSend) {
+        return new Promise(function (resolve, reject) {
+            const http = new XMLHttpRequest();
+            http.open('POST', '/selectedItem/save/camera-images', false);
+            http.setRequestHeader('Content-type', 'application/json');
+            http.onreadystatechange = function () {
+                if (http.readyState === 4 && http.status === 200) {
+                    console.log(http.responseText);
+                    //todo fix this data doesnt wait for await
+                    resolve( JSON.parse(http.response));
+                }
+            };
+            http.send(dataToSend); // Make sure to stringify
+        });
     }
 
     sendImagesToServer(dataToSend) {
         const http = new XMLHttpRequest();
-        http.open('POST', '/Images/');
+        http.open('POST', '/selectedItem/save/camera-images');
         http.setRequestHeader('Content-type', 'application/json');
         http.send(dataToSend); // Make sure to stringify
     }
@@ -305,13 +312,13 @@ class LidarPoints {
                     }
                 });
                 eachResult.selectedItemSpheresData = selectedSpheresData;
-                // todo add picture ids
 
                 let selectedDataRequestDto = {
                     menuId: menuId,
                     stepNumber: that.state.stepNumber,
                     selectedItemNameObject: line.userData.selectedItemNameObject,
-                    rawSelectedDataWithLine: JSON.stringify(eachResult)
+                    rawSelectedDataWithLine: JSON.stringify(eachResult),
+                    pictureId: line.userData.newlySavedPictureId
                 };
                 result.push(selectedDataRequestDto);
 
