@@ -37,6 +37,7 @@
 <body>
 <div id="mainmenu">
     <h3 class="text-center text-white pt-5">Main menu</h3>
+    <h4 class="text-center text-white pt-5">Selection</h4>
     <div class="container">
         <div id="mainmenu-row" class="row justify-content-center align-items-center">
             <div id="mainmenu-column" class="col-md-6">
@@ -44,7 +45,8 @@
                     <div class="row justify-content-center align-items-center">
                         <div class="">
                             <ul style="list-style-type:circle;" th:each="item : ${mainMenuitems}">
-                                <li><a class="item-text" th:href="@{/load/data/{id}(id=${item.id})}" th:text="${item.identificationName}">Title ...</a></li>
+                                <li>Selection: <a class="item-text" th:href="@{/load/data/{id}(id=${item.id})}" th:text="${item.identificationName}">Title ...</a></li>
+                                <li>Replay: <a class="item-text" th:href="@{/load/selected/data/{id}(id=${item.id})}" th:text="${item.identificationName}">Title ...</a></li>
                             </ul>
                         </div>
                     </div>

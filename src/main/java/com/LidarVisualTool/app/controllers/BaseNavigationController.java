@@ -22,16 +22,24 @@ public class BaseNavigationController {
     @GetMapping(value = "/")
     public String index(Model model) {
         model.addAttribute("mainMenuitems", mainMenuRepository.findAll());
-
         return "mainMenu";
     }
 
     @GetMapping(value = "/load/data/{id}")
-    public String mainMenu(Model model, @PathVariable(value = "id") Long id) {
+    public String itemSelectionPage(Model model, @PathVariable(value = "id") Long id) {
         model.addAttribute("menuId", id);
         model.addAttribute("maxOfSlider", rawDataService.getNumberOfDataAvailable(id));
         model.addAttribute("mainCameraYPosition", 0.4);
 
-        return "index";
+        return "itemSelection";
+    }
+
+    @GetMapping(value = "/load/selected/data/{id}")
+    public String selectedItemPage(Model model, @PathVariable(value = "id") Long id) {
+        model.addAttribute("menuId", id);
+        model.addAttribute("maxOfSlider", rawDataService.getNumberOfDataAvailable(id));
+        model.addAttribute("mainCameraYPosition", 0.4);
+
+        return "selectedItemLoad";
     }
 }

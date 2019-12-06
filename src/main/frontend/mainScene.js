@@ -17,13 +17,6 @@ class MainScene {
         this.frontSphere = this.createImageSphere(Math.PI);
         this.scene.add(this.backSphere);
         this.scene.add(this.frontSphere);
-
-        //todo remove
-        var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-        var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-        var cube = new THREE.Mesh( geometry, material );
-        cube.position.z = -4;
-        this.scene.add( cube );
     }
     animate() {
         this.frameId = requestAnimationFrame( this.animate.bind(this) );

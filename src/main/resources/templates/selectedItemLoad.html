@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>LVAST</title>
+    <link rel="stylesheet" type="text/css" href="/css/app.css">
+    <script>
+        var menuId =  [[${menuId}]];
+        var maxOfSlider =  [[${maxOfSlider}]];
+        var mainCameraYPosition =  [[${mainCameraYPosition}]];
+    </script>
+    <script src="/built/replayScripts.js"></script>
+</head>
+
+<body>
+<div id="loadModal">
+    <div class="spinner"></div>
+</div>
+<div id="app">
+    <div id="my-gui-slider-container"></div>
+
+</div>
+</body>
+</html>

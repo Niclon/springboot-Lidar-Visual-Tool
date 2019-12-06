@@ -3,6 +3,7 @@ package com.LidarVisualTool.app.service.impl;
 import com.LidarVisualTool.app.dto.SavePictureRequestDto;
 import com.LidarVisualTool.app.dto.SavedPictureResponseDto;
 import com.LidarVisualTool.app.dto.SelectedDataRequestDto;
+import com.LidarVisualTool.app.dto.SelectedDataResponseDto;
 import com.LidarVisualTool.app.helper.FileSaverHelper;
 import com.LidarVisualTool.app.model.RawData;
 import com.LidarVisualTool.app.model.SelectedDataPart;
@@ -74,5 +75,16 @@ public class SelectedItemServiceImpl implements SelectedItemService {
         }
 
         return resultList;
+    }
+
+    @Override
+    public List<SelectedDataResponseDto> getAllSelectedDataPartsForMenuIdAndDataPartId(Long menuId, Long dataId) {
+        List<String> allSelectedDataPartsForMenuIdAndDataPartId = selectedItemDataPartRepository.getAllSelectedDataPartsForMenuIdAndDataPartId(menuId, dataId);
+        List<SelectedDataResponseDto> responseDtoList = new ArrayList<>();
+        for (String dataPart : allSelectedDataPartsForMenuIdAndDataPartId) {
+            responseDtoList.add(new SelectedDataResponseDto(dataPart));
+        }
+
+        return responseDtoList;
     }
 }

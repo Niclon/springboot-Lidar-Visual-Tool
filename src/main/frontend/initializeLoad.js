@@ -1,27 +1,40 @@
-// import 'aframe';
-// import 'aframe-event-set-component';
-// import './components/aframe-custom';
-// import {render, h} from 'preact';
-// import Main from './main';
-// import LidarPoints from './lidarPoints';
-//
-// var groupOfLines = new THREE.Group();
-// var groupOfPoints = new THREE.Group();
-//
-// document.addEventListener('DOMContentLoaded', () => {
-//     render(<Main/>, document.querySelector('#app'));
-// });
-//
-// document.addEventListener('DOMContentLoaded', () => {
-//     render(<LidarPoints stepNumber={0} isReplay={true} maxStepNumber={220}/>, document.querySelector('#lidarPoints'));
-//     setUpScene();
-// });
-//
-// function setUpScene() {
-//     let scene = document.querySelector('a-scene');
-//     groupOfLines.name = 'groupOfLines';
-//     groupOfPoints.name = 'groupOfPoints';
-//     scene.object3D.add(groupOfLines);
-//     scene.object3D.add(groupOfPoints);
-//     document.querySelector('a-camera').setAttribute("position", "0 0.4 0");
-// }
+import LidarPoints from "./lidarPoints";
+import MainScene from "./mainScene";
+
+var THREE = require('three');
+var mainScene;
+var scene;
+var groupOfLines = new THREE.Group();
+var groupOfPoints = new THREE.Group();
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    setUpScene();
+    var lidarPoints = new LidarPoints({
+        stepNumber: 0,
+        maxStepNumber: maxOfSlider,
+        menuId: menuId,
+        isReplay: true,
+        mainScene: mainScene,
+        groups: {
+            groupOfLines,
+            groupOfPoints
+        }
+    });
+    lidarPoints.render();
+    mainScene.animate();
+
+
+    function setUpScene() {
+        // scene = document.querySelector('a-scene');
+        mainScene = new MainScene();
+        scene = mainScene.scene;
+        groupOfLines.name = 'groupOfLines';
+        groupOfPoints.name = 'groupOfPoints';
+        scene.add(groupOfLines);
+        scene.add(groupOfPoints);
+        mainScene.camera.position.set(0, mainCameraYPosition, 0.000000000000001);
+
+    }
+});
+

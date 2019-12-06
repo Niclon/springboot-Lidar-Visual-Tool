@@ -17,8 +17,7 @@ class LidarPoints {
     }
 
     removeSpheres() {
-        let scenel = this.mainScene.scene;
-        let selectedObject = scenel.getObjectByName("groupOfPoints");
+        let selectedObject = this.groups.groupOfPoints;
         if (selectedObject) {
             selectedObject.children.forEach(function (x) {
                 x.geometry.dispose();
@@ -27,7 +26,7 @@ class LidarPoints {
             selectedObject.children = [];
         }
         if (this.state.isReplay) {
-            let lines = scenel.getObjectByName("groupOfLines");
+            let lines = this.groups.groupOfLines;
             if (selectedObject) {
                 lines.children.forEach(function (x) {
                     x.geometry.dispose();
@@ -60,7 +59,9 @@ class LidarPoints {
                 that.mainScene.frontSphere.material.needsUpdate = true;
                 that.mainScene.backSphere.material.map = arrayOfMaterials[backPicture.index];
                 that.mainScene.backSphere.material.needsUpdate = true;
-                await that.takePicturesFromCameras();
+                if (!that.state.isReplay){
+                    await that.takePicturesFromCameras();
+                }
                 callBack();
             }, function (error) {
                 console.error("Could not load all textures:", error);
@@ -102,7 +103,6 @@ class LidarPoints {
             for (let k = 0; k < imageDataDtosLength; k++){
                 if (imageDataDtos[k]["cameraHashFromFrontEnd"] === cameraHash){
                     line.userData.newlySavedPictureId = imageDataDtos[k]["newlySavedPictureId"];
-                    console.log("just set " + imageDataDtos[k]["newlySavedPictureId"]);
                     break;
                 }
             }
@@ -143,7 +143,7 @@ class LidarPoints {
             // request.open('GET', '/dataStored/' + this.state.stepNumber, true);
             request.open('GET', '/rawData/' + this.state.menuId + '/' + this.state.stepNumber, true);
         } else {
-            request.open('GET', '/dataStoredReplay/' + this.state.stepNumber, true);
+            request.open('GET', '/selected/data/stored/replay/' + this.state.menuId + '/' + this.state.stepNumber, true);
         }
 
         request.setRequestHeader('Content-Type', 'application/json');
@@ -173,33 +173,30 @@ class LidarPoints {
 
         let that = this;
         let thatPoints = this.state.lidarPoints;
-        if (that.state.isReplay) {
-            thatPoints = JSON.parse(thatPoints);
-        }
 
-        for (let index in thatPoints) {
-            if (that.state.isReplay) {
-                let current = thatPoints[index];
-                for (let innerOne in current) {
-                    let value = current[innerOne];
-                    if (innerOne.toLowerCase().indexOf("line") >= 0) {
-                        that.createBorderAndRotate(value);
-                        continue;
-                    }
+        if (!that.state.isReplay) {
+            for (let index in thatPoints) {
+                let value = thatPoints[index];
+                let sphere = new THREE.Mesh(geometry, material);
+                sphere.dynamic = true;
+                sphere.verticesNeedUpdate = true;
+                sphere.position.set(value[0], value[2], -value[1]);
+                spheres.add(sphere);
+            }
+        } else {
+            for (let index in thatPoints) {
+                let current = JSON.parse( thatPoints[index]['rawSelectedData']);
+                that.createBorderAndRotate(current.line);
+                let selectedItemSpheresDataMapOfArrays = current.selectedItemSpheresData;
+                for (let innerOne in selectedItemSpheresDataMapOfArrays) {
+                    let value = selectedItemSpheresDataMapOfArrays[innerOne];
                     let sphere = new THREE.Mesh(geometry, material);
                     sphere.dynamic = true;
                     sphere.verticesNeedUpdate = true;
-                    sphere.position.set(value.x, value.y, value.z);
+                    sphere.position.fromArray(value);
                     spheres.add(sphere);
                 }
-                continue;
             }
-            let value = thatPoints[index];
-            let sphere = new THREE.Mesh(geometry, material);
-            sphere.dynamic = true;
-            sphere.verticesNeedUpdate = true;
-            sphere.position.set(value[0], value[2], -value[1]);
-            spheres.add(sphere);
         }
     }
 
