@@ -2,7 +2,11 @@ const webpack = require('webpack');
 var path = require('path');
 
 module.exports = {
-    entry: './src/main/frontend/initialize.js',
+    // entry: './src/main/frontend/initialize.js',
+    entry: {
+        selectionScripts: './src/main/frontend/initialize.js',
+        replayScripts: './src/main/frontend/initializeLoad.js'
+    },
     devtool: 'sourcemaps',
     cache: false,
     mode: 'development',
@@ -11,7 +15,7 @@ module.exports = {
         //for mwnw run
         // filename: './src/main/resources/static/built/bundle.js'
         //for debug pupouse
-        filename: './target/classes/static/built/bundle.js'
+        filename: './target/classes/static/built/[id].js'
     },
     // module: {
     //     rules: [
