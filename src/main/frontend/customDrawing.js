@@ -112,6 +112,8 @@ class CustomDrawing {
     }
 
     clearAndHideCanvas() {
+        this.setEndpointToNull();
+        this.setStartpointToNull();
         this.canvasContext.clearRect(0, 0, this.canvasContext.canvas.width, this.canvasContext.canvas.height); // Clears the canvas
         document.getElementById('drawingCanvas').style.visibility = 'hidden';
     }

@@ -35,6 +35,7 @@ class CustomSelection {
                 customSelection: this
             }
         );
+        this.scatchBoxCube = this.createScratchBoxCubeForStoppingScene();
         this.initEvents();
     }
 
@@ -45,7 +46,10 @@ class CustomSelection {
             //drawing
             if (e.ctrlKey) {
                 if (!that.isFrameStopped) {
-                    // document.querySelector('#scatchPlane').setAttribute('visible', 'true');
+                    that.scatchBoxCube.visible = true;
+                    // just for forcing renderer to check all objects in scene
+                    that.mainScene.stopAnimation();
+                    that.mainScene.animate();
                     that.mainScene.stopAnimation();
 
                     that.isFrameStopped = true;
@@ -55,7 +59,7 @@ class CustomSelection {
             // cancel drawing
             if (e.altKey) {
                 if (that.isFrameStopped) {
-                    // document.querySelector('#scatchPlane').setAttribute('visible', 'false');
+                    that.scatchBoxCube.visible = false;
                     that.isFrameStopped = false;
                     that.mainScene.animate();
                     that.customDrawing.clearAndHideCanvas();
@@ -71,13 +75,13 @@ class CustomSelection {
                             that.createItemNameInDatabaseReturnPromise(selectedItemName)
                                 .then(function (selectedItemNameFromDB) {
                                     that.makeBorder(selectedItemNameFromDB);
+                                    that.scatchBoxCube.visible = false;
                                     that.isFrameStopped = false;
                                     that.mainScene.animate();
                                     that.customDrawing.clearAndHideCanvas();
                                 });
                         } else {
-                            that.makeBorder();
-                            // document.querySelector('#scatchPlane').setAttribute('visible', 'false');
+                            that.scatchBoxCube.visible = false;
                             that.isFrameStopped = false;
                             that.mainScene.animate();
                             that.customDrawing.clearAndHideCanvas();
@@ -212,7 +216,7 @@ class CustomSelection {
     }
 
     uuidv4() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
             var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
@@ -278,6 +282,20 @@ class CustomSelection {
         });
     }
 
+    createScratchBoxCubeForStoppingScene() {
+        const material = new THREE.MeshPhongMaterial({
+            color: 0xF3F3F3,
+            opacity: 0.5,
+            transparent: true,
+            side: THREE.DoubleSide
+        });
+        let geometry = new THREE.BoxBufferGeometry(2, 2, 2);
+        const cube = new THREE.Mesh(geometry, material);
+        cube.position.set(0, mainCameraYPosition, 0);
+        this.scene.add(cube);
+        cube.visible = false;
+        return cube;
+    }
 }
 
 export default CustomSelection;
