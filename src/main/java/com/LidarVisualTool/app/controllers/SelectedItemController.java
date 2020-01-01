@@ -25,6 +25,11 @@ public class SelectedItemController {
         return new ResponseEntity<>(selectedItemService.saveItemNameAndReturnName(selectedItemName), HttpStatus.OK);
     }
 
+    @GetMapping("/selectedItem/get/all/names")
+    public ResponseEntity<List<SelectedItemName>> getAllSelectedItems(){
+        return new ResponseEntity<>(selectedItemService.getAllSelectedItemNames(), HttpStatus.OK);
+    }
+
     @PostMapping("/selectedItem/save/data-part")
     public ResponseEntity saveSelectedItemDataParts(@RequestBody List<SelectedDataRequestDto> selectedDataRequestDtos) {
         selectedItemService.saveItemDataPartsFromDto(selectedDataRequestDtos);

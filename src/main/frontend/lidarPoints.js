@@ -109,9 +109,6 @@ class LidarPoints {
         }
 
     }
-    // async sleep(msec) {
-    //     return new Promise(resolve => setTimeout(resolve, msec));
-    // }
 
     sendImagesToServerAndWaitForResultWithImageId(dataToSend) {
         return new Promise(function (resolve, reject) {

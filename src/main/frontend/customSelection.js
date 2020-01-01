@@ -1,6 +1,7 @@
 var THREE = require('three');
 import CustomDragControls from "./customDragControls";
 import CustomSelectionResizer from "./customSelectionResizer";
+import CustomGuiItemNameSelection from "./customGuiItemNameSelection"
 
 class CustomSelection {
     constructor(props) {
@@ -35,13 +36,14 @@ class CustomSelection {
                 customSelection: this
             }
         );
+        this.customGuiItemNameSelectionModal = new CustomGuiItemNameSelection();
         this.scatchBoxCube = this.createScratchBoxCubeForStoppingScene();
         this.initEvents();
     }
 
-    initEvents() {
+    async initEvents() {
         var that = this;
-        window.onkeydown = function (e) {
+        window.onkeydown = async function (e) {
             if (!e) e = window.event;
             //drawing
             if (e.ctrlKey) {
@@ -70,27 +72,32 @@ class CustomSelection {
                 document.querySelector('#drawingCanvas').setAttribute('visible', 'false');
                 if (that.isFrameStopped) {
                     if (that.customDrawing.endPointX != null && that.customDrawing.startPointX != null) {
-                        var selectedItemName = prompt("Please enter selected item name (required):", "Car");
-                        if (selectedItemName !== null && selectedItemName.length >= 1) {
-                            that.createItemNameInDatabaseReturnPromise(selectedItemName)
-                                .then(function (selectedItemNameFromDB) {
-                                    that.makeBorder(selectedItemNameFromDB);
+                        Promise.all(that.createModalAndListenToEvents()).then(
+                            data => {
+                                let itemNameObject = data[0];
+                                if (itemNameObject !== null && itemNameObject.length >= 1) {
+                                    that.createItemNameInDatabaseReturnPromise(itemNameObject)
+                                        .then(function (selectedItemNameFromDB) {
+                                            that.makeBorder(selectedItemNameFromDB);
+                                            that.customGuiItemNameSelectionModal.addNewItemNameToSelection(selectedItemNameFromDB);
+                                            that.scatchBoxCube.visible = false;
+                                            that.isFrameStopped = false;
+                                            that.mainScene.animate();
+                                            that.customDrawing.clearAndHideCanvas();
+                                        });
+                                } else {
                                     that.scatchBoxCube.visible = false;
                                     that.isFrameStopped = false;
                                     that.mainScene.animate();
                                     that.customDrawing.clearAndHideCanvas();
-                                });
-                        } else {
-                            that.scatchBoxCube.visible = false;
-                            that.isFrameStopped = false;
-                            that.mainScene.animate();
-                            that.customDrawing.clearAndHideCanvas();
-                        }
+                                }
+                            }
+                        );
                     }
                 }
             }
             // moving selections 'M'
-            if (e.keyCodeVal === 77 || e.key.toLocaleLowerCase() === 'M'.toLocaleLowerCase()) {
+            if (e.keyCodeVal === 77 || ( e.key && e.key.toLocaleLowerCase() === 'M'.toLocaleLowerCase())) {
                 if (that.dragControls) {
                     if (that.isDraggingControlEnabled) {
                         that.dragControls.setCursorToAuto();
@@ -103,7 +110,7 @@ class CustomSelection {
                 }
             }
             //deletion of selection 'DEL'
-            if (e.keyCodeVal === 46 || e.key.toLocaleLowerCase() === 'Delete'.toLocaleLowerCase()) {
+            if (e.keyCodeVal === 46 || ( e.key && e.key.toLocaleLowerCase() === 'Delete'.toLocaleLowerCase())) {
                 if (that.dragControls) {
                     if (that.isDraggingControlEnabled && false === that.isFrameStopped) {
                         document.dispatchEvent(that.deletionEvent);
@@ -113,7 +120,7 @@ class CustomSelection {
                 }
             }
             //for resizing key 'N'
-            if (e.keyCodeVal === 78 || e.key.toLocaleLowerCase() === 'N'.toLocaleLowerCase()) {
+            if (e.keyCodeVal === 78 || ( e.key && e.key.toLocaleLowerCase() === 'N'.toLocaleLowerCase())) {
                 if (that.customSelectionResizer) {
                     if (that.customSelectionResizer.enabled && false === that.isFrameStopped) {
                         that.customSelectionResizer.disable();
@@ -148,11 +155,12 @@ class CustomSelection {
         });
     }
 
-    makeBorder(selectedItemNameFromDB) {
 
-        // this.scene = document.querySelector('a-scene');
-        // this.renderer = this.scene.renderer;
-        // this.mainCamera = this.scene.camera;
+    createModalAndListenToEvents() {
+        return [this.customGuiItemNameSelectionModal.showModalWithWaitingForActions()];
+    }
+
+    makeBorder(selectedItemNameFromDB) {
 
         let firstPoint;
         let secondPoint;

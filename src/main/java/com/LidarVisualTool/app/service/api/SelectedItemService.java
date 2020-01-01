@@ -17,4 +17,6 @@ public interface SelectedItemService {
     List<SavedPictureResponseDto> saveItemPictureAndReturn(List<SavePictureRequestDto> savePictureRequestDto);
 
     List<SelectedDataResponseDto> getAllSelectedDataPartsForMenuIdAndDataPartId(Long menuId, Long dataId);
+
+    List<SelectedItemName> getAllSelectedItemNames();
 }

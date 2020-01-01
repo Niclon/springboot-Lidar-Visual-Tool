@@ -40,7 +40,11 @@ public class SelectedItemServiceImpl implements SelectedItemService {
 
     @Override
     public SelectedItemName saveItemNameAndReturnName(String selectedItemName) {
-        return selectedItemNameRepository.save(new SelectedItemName(selectedItemName));
+        SelectedItemName selectedItem = selectedItemNameRepository.findByItemNameIgnoreCase(selectedItemName);
+        if (selectedItem == null) {
+            return selectedItemNameRepository.save(new SelectedItemName(selectedItemName));
+        }
+        return selectedItem;
     }
 
     @Override
@@ -86,5 +90,10 @@ public class SelectedItemServiceImpl implements SelectedItemService {
         }
 
         return responseDtoList;
+    }
+
+    @Override
+    public List<SelectedItemName> getAllSelectedItemNames() {
+        return selectedItemNameRepository.findAll();
     }
 }

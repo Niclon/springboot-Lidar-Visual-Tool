@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SelectedItemNameRepository extends JpaRepository<SelectedItemName, Long> {
+    SelectedItemName findByItemNameIgnoreCase(String itemName);
 }

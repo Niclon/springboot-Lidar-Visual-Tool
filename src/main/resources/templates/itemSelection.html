@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>LVAST</title>
+    <link rel="stylesheet" type="text/css" href="/css/app.css">
+    <script>
+        var menuId =  [[${menuId}]];
+        var maxOfSlider =  [[${maxOfSlider}]];
+        var mainCameraYPosition =  [[${mainCameraYPosition}]];
+    </script>
+    <script src="/built/selectionScripts.js"></script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<div id="loadModal">
+    <div class="spinner"></div>
+</div>
+
+<div class="modal fade" id="itemNameModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">New item name</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form onkeypress="return event.keyCode != 13">
+                    <div class="form-group">
+                        <label for="selected-item-name-input" class="col-form-label">New Item Name:</label>
+                        <input  type="text" class="form-control" id="selected-item-name-input">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="selected-item-name-input-close" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="selected-item-name-input-submit" type="button" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="drawingCanvasDiv"></div>
+<div id="app">
+    <div id="my-gui-slider-container"></div>
+    <div id="my-gui-action-container"></div>
+<!--    <div id="my-gui-selected-item-name-container"></div>-->
+    <div class="w3-sidebar w3-bar-block w3-collapse w3-card w3-animate-right" style="width:200px;right:0;" id="my-gui-selected-item-name-container">
+
+    </div>
+</div>
+
+</body>
