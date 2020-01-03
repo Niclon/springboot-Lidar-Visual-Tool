@@ -17,24 +17,4 @@ module.exports = {
         //for debug pupouse
         filename: './target/classes/static/built/[id].js'
     },
-    // module: {
-    //     rules: [
-    //         {
-    //             test: path.join(__dirname, '.'),
-    //             exclude: /(node_modules)/,
-    //             use: [{
-    //                 loader: 'babel-loader',
-    //                 options: {
-    //                     presets: ["@babel/preset-env", "@babel/preset-react"]
-    //                 }
-    //             }]
-    //         }
-    //     ]
-    // },
-    // plugins: [
-    //     new webpack.ProvidePlugin({
-    //         "React": "react",
-    //         "ReactDOM": "react-dom"
-    //     }),
-    // ],
 };
