@@ -11,7 +11,6 @@ class CustomGuiItemNameSelection {
         function keyDownBody(e) {
             var keyCode = that._getNumberFromKeyEvent(e);
             if (keyCode != null) {
-                console.log(keyCode);
                 let length = that.selectedItemNamesList.length;
                 if (keyCode < length) {
                     if ($('#itemNameModal').is(":visible")) {
@@ -58,7 +57,6 @@ class CustomGuiItemNameSelection {
             http.setRequestHeader('Content-type', 'application/json');
             http.onreadystatechange = function () {
                 if (http.readyState === 4 && http.status === 200) {
-                    console.log(http.responseText);
                     resolve(JSON.parse(http.response));
                 }
             };

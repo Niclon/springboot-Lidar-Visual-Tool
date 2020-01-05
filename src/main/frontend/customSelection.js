@@ -115,7 +115,7 @@ class CustomSelection {
                     if (that.isDraggingControlEnabled && false === that.isFrameStopped) {
                         document.dispatchEvent(that.deletionEvent);
                     } else {
-                        console.log("To delete selection please enable dragging (press key 'M')");
+                        alert("To delete selection please enable dragging (press key 'M')");
                     }
                 }
             }

@@ -117,8 +117,6 @@ class LidarPoints {
             http.setRequestHeader('Content-type', 'application/json');
             http.onreadystatechange = function () {
                 if (http.readyState === 4 && http.status === 200) {
-                    console.log(http.responseText);
-                    //todo fix this data doesnt wait for await
                     resolve( JSON.parse(http.response));
                 }
             };

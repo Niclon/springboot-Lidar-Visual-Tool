@@ -13,8 +13,9 @@ class MainScene {
         this.createBasicControls();
         document.body.appendChild(this.renderer.domElement);
         window.addEventListener('resize', this.onWindowResize.bind(this), false);
-        this.backSphere = this.createImageSphere(0);
-        this.frontSphere = this.createImageSphere(Math.PI);
+        //but there is z scale so it will be on the oposite side
+        this.backSphere = this.createImageSphere(Math.PI);
+        this.frontSphere = this.createImageSphere(0);
         this.scene.add(this.backSphere);
         this.scene.add(this.frontSphere);
     }
@@ -45,7 +46,9 @@ class MainScene {
         let geometry = new THREE.SphereBufferGeometry(15, 32, 32, phiStart, Math.PI, 0, Math.PI);
         let material = new THREE.MeshBasicMaterial();
         material.side = THREE.DoubleSide;
-        return new THREE.Mesh(geometry, material);
+        let sphere = new THREE.Mesh(geometry, material);
+        sphere.scale.setZ(-1);
+        return sphere;
     }
 }
 
