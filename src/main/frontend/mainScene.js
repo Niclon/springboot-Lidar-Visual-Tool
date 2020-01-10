@@ -6,9 +6,9 @@ var THREE = require('three');
 class MainScene {
     constructor() {
         this.scene = new THREE.Scene();
-        this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        this.camera = new THREE.PerspectiveCamera(75, (window.innerWidth - 200) / window.innerHeight, 0.1, 1000);
         this.renderer = new THREE.WebGLRenderer();
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setSize(window.innerWidth - 200, window.innerHeight);
         this.renderer.setClearColor(0xEEEEEE);
         this.createBasicControls();
         document.body.appendChild(this.renderer.domElement);
