@@ -161,7 +161,7 @@ class LidarPoints {
         if (!spheres) {
             return;
         }
-
+    
         let geometry = new THREE.SphereBufferGeometry(0.005, 5, 5);
         geometry.verticesNeedUpdate = true;
         let material = new THREE.MeshLambertMaterial({color: 0x39ff14});

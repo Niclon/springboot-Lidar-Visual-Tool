@@ -21,6 +21,6 @@ public interface SelectedItemDataPartRepository extends JpaRepository<SelectedDa
 //    @Query(value="SELECT r FROM selected_data_parts r WHERE r.selected_item_name_id = :id")
 //    List<SelectedDataPart> getAllBySelectedItemName(@Param("id") Long selectedItemNameId);
 
-    @Query(value="SELECT r FROM selected_data_parts r WHERE r.selected_item_name_id = ?1", nativeQuery = true)
+    @Query(value="SELECT * FROM selected_data_parts r WHERE r.selected_item_name_id = ?1", nativeQuery = true)
     List<SelectedDataPart> getAllBySelectedItemName(Long selectedItemNameId);
 }

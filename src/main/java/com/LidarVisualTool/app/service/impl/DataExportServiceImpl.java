@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +25,6 @@ import java.util.List;
 @Service
 public class DataExportServiceImpl implements DataExportService {
 
-    //    todo maybe remove
     private final SelectedItemNameRepository selectedItemNameRepository;
     private final SelectedItemDataPartRepository selectedItemDataPartRepository;
 
@@ -68,22 +69,30 @@ public class DataExportServiceImpl implements DataExportService {
 
     @Override
     public File createZipFileForExport(List<DataExportDto> exportData) throws IOException {
-        String finalZipPathToFile = exportTmpFolderPath + new Date().toString() + ".zip";
+        String pattern = "MM-dd-yyyy";
+        DateFormat df = new SimpleDateFormat(pattern);
+        String finalZipPathToFile = exportTmpFolderPath + df.format(new Date()) + ".zip";
         String finalPathToTmpFile = exportTmpFolderPath + "resultData";
         File tmpHolder = new File(finalPathToTmpFile);
         tmpHolder.mkdirs();
         ObjectMapper objectMapper = new ObjectMapper();
 
         for (DataExportDto dataExportDto : exportData) {
+            List<DataExportRow> data = dataExportDto.getData();
+            if(dataExportDto.getData() == null || dataExportDto.getData().isEmpty()){
+                continue;
+            }
             String itemName = dataExportDto.getItemName();
             String itemFolder = finalPathToTmpFile + "/" + itemName;
-            String pictureItemFolder = itemFolder + "/pictures";
+            String pictureItemFolder = itemFolder + "/pictures/";
+            String picturePatPrefix = itemName + "/pictures/";
             new File(pictureItemFolder).mkdirs();
-            for (DataExportRow dataRow : dataExportDto.getData()) {
+            for (DataExportRow dataRow : data) {
                 FileUtil.copyFile(
                         new File(selectedItemPicturesFolderPath + dataRow.getImageName()),
                         new File(pictureItemFolder + dataRow.getImageName())
                 );
+                dataRow.setImageName(picturePatPrefix + dataRow.getImageName());
             }
             objectMapper.writeValue(new File(itemFolder + "/data.json"), dataExportDto);
         }
