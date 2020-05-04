@@ -41,30 +41,13 @@ public class DataExportServiceImpl implements DataExportService {
 
     @Override
     public List<DataExportDto> getAllSelectedDataToExport() {
-        List<DataExportDto> result = new ArrayList<>();
         List<SelectedItemName> all = selectedItemNameRepository.findAll();
+        return createAllDataExportDtos(all);
+    }
 
-        for (SelectedItemName selectedItemName : all) {
-            DataExportDto item = new DataExportDto();
-            item.setItemName(selectedItemName.getItemName());
-            List<SelectedDataPart> allBySelectedItemName =
-                    selectedItemDataPartRepository.getAllBySelectedItemName(selectedItemName.getId());
-            DataExportRow row;
-            for (SelectedDataPart selectedDataPart : allBySelectedItemName) {
-                row = new DataExportRow();
-                row.setMenuId(selectedDataPart.getRawData().getMainMenu().getId());
-                row.setDataId(selectedDataPart.getRawData().getDataId());
-//                // TODO: 5/1/2020 maybe little update path
-                String[] splits = selectedDataPart.getSelectedItemPicture().getPicturePath().split("/");
-                row.setImageName(splits[splits.length - 1]);
-//                // TODO: 5/1/2020 remove line from it
-                row.setPoints(selectedDataPart.getRawSelectedDataArray());
-                item.addRowToData(row);
-            }
-            result.add(item);
-        }
-
-        return result;
+    @Override
+    public List<DataExportDto> getSelectedDataToExport(Long mainMenuId, Date date) {
+        return createDataExportBasedOnParameters(mainMenuId, date);
     }
 
     @Override
@@ -79,7 +62,7 @@ public class DataExportServiceImpl implements DataExportService {
 
         for (DataExportDto dataExportDto : exportData) {
             List<DataExportRow> data = dataExportDto.getData();
-            if(dataExportDto.getData() == null || dataExportDto.getData().isEmpty()){
+            if (dataExportDto.getData() == null || dataExportDto.getData().isEmpty()) {
                 continue;
             }
             String itemName = dataExportDto.getItemName();
@@ -106,5 +89,51 @@ public class DataExportServiceImpl implements DataExportService {
         FileUtils.deleteDirectory(new File(finalPathToTmpFile));
 
         return new File(finalZipPathToFile);
+    }
+
+    private List<DataExportDto> createAllDataExportDtos(List<SelectedItemName> all) {
+        List<DataExportDto> result = new ArrayList<>();
+        for (SelectedItemName selectedItemName : all) {
+            DataExportDto item = new DataExportDto();
+            item.setItemName(selectedItemName.getItemName());
+            List<SelectedDataPart> allBySelectedItemName =
+                    selectedItemDataPartRepository.getAllBySelectedItemName(selectedItemName.getId());
+            createDataExportRow(item, allBySelectedItemName);
+            result.add(item);
+        }
+
+        return result;
+    }
+
+    private List<DataExportDto> createDataExportBasedOnParameters(Long mainMenuId, Date date) {
+        List<SelectedItemName> all = selectedItemNameRepository.findAll();
+        List<DataExportDto> result = new ArrayList<>();
+        for (SelectedItemName selectedItemName : all) {
+            DataExportDto item = new DataExportDto();
+            item.setItemName(selectedItemName.getItemName());
+            List<SelectedDataPart> allBySelectedItemName =
+                    selectedItemDataPartRepository.getAllBySelectedItemNameAndMainMenuIdAndDateIsGreaterThan(
+                            selectedItemName.getId(), mainMenuId, date);
+            createDataExportRow(item, allBySelectedItemName);
+            if (item.getData() != null && !item.getData().isEmpty()) {
+                result.add(item);
+            }
+        }
+
+        return result;
+    }
+
+    private void createDataExportRow(DataExportDto item, List<SelectedDataPart> allBySelectedItemName) {
+        DataExportRow row;
+        for (SelectedDataPart selectedDataPart : allBySelectedItemName) {
+            row = new DataExportRow();
+            row.setMenuId(selectedDataPart.getRawData().getMainMenu().getId());
+            row.setDataId(selectedDataPart.getRawData().getDataId());
+            String[] splits = selectedDataPart.getSelectedItemPicture().getPicturePath().split("/");
+            row.setImageName(splits[splits.length - 1]);
+//                // TODO: 5/1/2020 remove line from it
+            row.setPoints(selectedDataPart.getRawSelectedDataArray());
+            item.addRowToData(row);
+        }
     }
 }

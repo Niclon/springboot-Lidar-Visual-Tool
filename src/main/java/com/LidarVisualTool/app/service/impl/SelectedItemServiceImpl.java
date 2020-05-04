@@ -17,6 +17,7 @@ import com.LidarVisualTool.app.service.api.SelectedItemService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -56,6 +57,7 @@ public class SelectedItemServiceImpl implements SelectedItemService {
             selectedDataPart.setRawSelectedDataArray(dataPartDto.getRawSelectedDataWithLine());
             selectedDataPart.setSelectedItemName(dataPartDto.getSelectedItemNameObject());
             selectedDataPart.setSelectedItemPicture(selectedItemPictureRepository.getOne(dataPartDto.getPictureId()));
+            selectedDataPart.setCreationDate(new Date());
             selectedItemDataPartRepository.save(selectedDataPart);
         }
     }

@@ -1,6 +1,7 @@
 package com.LidarVisualTool.app.model;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "selected_data_parts")
@@ -20,8 +21,11 @@ public class SelectedDataPart {
     @Column(name = "raw_selected_data")
     private String rawSelectedDataArray;
 
+    @Column(name = "creation_date")
+    private Date creationDate;
+
     @ManyToOne
-    @JoinColumn(name = "raw_data_id",nullable = false)
+    @JoinColumn(name = "raw_data_id", nullable = false)
     private RawData rawData;
 
     public Long getId() {
@@ -62,5 +66,13 @@ public class SelectedDataPart {
 
     public void setRawData(RawData rawData) {
         this.rawData = rawData;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 }
