@@ -15,7 +15,6 @@
         }
 
         #mainmenu .container #mainmenu-row #mainmenu-column #mainmenu-box {
-            margin-top: 120px;
             max-width: 600px;
             height: 320px;
             border: 1px solid #9C9C9C;
@@ -37,8 +36,8 @@
 </head>
 <body>
 <div id="mainmenu">
-    <h3 class="text-center text-white pt-5">Main menu</h3>
-    <h4 class="text-center text-white pt-5">Selection</h4>
+    <h3 class="text-center pt-5">Main menu</h3>
+    <h4 class="text-center pt-2">Selection</h4>
     <div class="container">
         <div id="mainmenu-row" class="row justify-content-center align-items-center">
             <div id="mainmenu-column" class="col-md-6">
@@ -54,24 +53,27 @@
                         </div>
                     </div>
                 </div>
+                <div style="text-align: center; background-color: #EAEAEA;">
+                    <h4>Export Selected Data</h4>
+                    <a href="/download/full/export" download>
+                        <button type="button" class="btn btn-outline-secondary">
+                            Export ALL (might take a while)
+                        </button>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<div>
-    <h4>Export Selected Data</h4>
-    <a href="/download/full/export" download>
-        Export ALL (might take a while)
-    </a>
-
-    <button type="button" onclick="alert('Hello world!')">Click Me!</button>
-</div>
-
-<!--<tr th:each="item : ${mainMenuitems}">-->
-<!--    <td th:text="${item.id}">1</td>-->
-<!--    <td><a th:href="@{/data(id=${item.id})}" th:text="${item.identificationName}">Title ...</a></td>-->
-<!--</tr>-->
+<!--<div style="text-align: center; background-color: #EAEAEA;">-->
+<!--    <h4>Export Selected Data</h4>-->
+<!--    <a href="/download/full/export" download>-->
+<!--        <button type="button" class="btn btn-outline-secondary">-->
+<!--            Export ALL (might take a while)-->
+<!--        </button>-->
+<!--    </a>-->
+<!--</div>-->
 
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

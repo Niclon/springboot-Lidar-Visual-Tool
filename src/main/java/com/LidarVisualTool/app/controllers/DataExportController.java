@@ -33,7 +33,7 @@ public class DataExportController {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/zip"))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + resultZipFile.getName() + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + resultZipFile.getName())
                 .body(new InputStreamResource(new ByteArrayInputStream(Files.readAllBytes(resultZipFile.toPath()))));
     }
 
