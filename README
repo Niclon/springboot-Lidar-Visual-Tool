@@ -5,4 +5,10 @@ This will do what is specified in pom.xml(build) and install node minifie js
 
 base guide = https://spring.io/guides/tutorials/react-and-spring-data-rest/
 
+create folders for data in base
+ data
+ |__ around_images
+ |__ selected_images
+
+
 
