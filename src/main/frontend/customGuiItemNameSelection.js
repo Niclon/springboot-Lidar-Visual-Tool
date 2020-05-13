@@ -99,7 +99,7 @@ class CustomGuiItemNameSelection {
 
     addNewItemNameToSelection(newItemNameFromDB) {
         let alreadyContained = this.selectedItemNamesList.filter(item => (item.id === newItemNameFromDB.id));
-        if (alreadyContained == null || alreadyContained.length === 0){
+        if (alreadyContained == null || alreadyContained.length !== 0) {
             return;
         }
 

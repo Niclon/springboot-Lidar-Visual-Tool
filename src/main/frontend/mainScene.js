@@ -7,9 +7,7 @@ class MainScene {
     constructor() {
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, (window.innerWidth - 200) / window.innerHeight, 0.1, 1000);
-        this.renderer = new THREE.WebGLRenderer();
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.setClearColor(0xEEEEEE);
+        this.createRenderer();
         this.createBasicControls();
         document.body.appendChild(this.renderer.domElement);
         window.addEventListener('resize', this.onWindowResize.bind(this), false);
@@ -50,6 +48,17 @@ class MainScene {
         let sphere = new THREE.Mesh(geometry, material);
         sphere.scale.setZ(-1);
         return sphere;
+    }
+
+    createRenderer() {
+        this.renderer = new THREE.WebGLRenderer();
+        this.setRendererSize();
+        this.renderer.setClearColor(0xEEEEEE);
+    }
+
+    setRendererSize() {
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
     }
 }
 

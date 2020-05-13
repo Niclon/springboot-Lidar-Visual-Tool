@@ -124,18 +124,10 @@ class LidarPoints {
         });
     }
 
-    sendImagesToServer(dataToSend) {
-        const http = new XMLHttpRequest();
-        http.open('POST', '/selectedItem/save/camera-images');
-        http.setRequestHeader('Content-type', 'application/json');
-        http.send(dataToSend); // Make sure to stringify
-    }
-
     loadDataFromServerAndRenderPoints() {
         let that = this;
         let request = new XMLHttpRequest();
         if (!this.state.isReplay) {
-            // request.open('GET', '/dataStored/' + this.state.stepNumber, true);
             request.open('GET', '/rawData/' + this.state.menuId + '/' + this.state.stepNumber, true);
         } else {
             request.open('GET', '/selected/data/stored/replay/' + this.state.menuId + '/' + this.state.stepNumber, true);
@@ -162,9 +154,9 @@ class LidarPoints {
             return;
         }
     
-        let geometry = new THREE.SphereBufferGeometry(0.005, 5, 5);
+        let geometry = new THREE.SphereBufferGeometry(0.005, 3, 2);
         geometry.verticesNeedUpdate = true;
-        let material = new THREE.MeshLambertMaterial({color: 0x39ff14});
+        let material = new THREE.MeshBasicMaterial({color: 0x0});
 
         let that = this;
         let thatPoints = this.state.lidarPoints;
